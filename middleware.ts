@@ -22,6 +22,11 @@ const protectedPaths = [
 export default auth((req) => {
   const { pathname } = req.nextUrl
 
+  // Never intercept auth callbacks — session cookie isn't set yet
+  if (pathname.startsWith('/api/auth')) {
+    return NextResponse.next()
+  }
+
   const isProtected = protectedPaths.some(p => pathname.startsWith(p))
 
   if (isProtected && !req.auth) {
@@ -34,5 +39,5 @@ export default auth((req) => {
 })
 
 export const config = {
-  matcher: ['/((?!api|_next/static|_next/image|favicon.ico).*)'],
+  matcher: ['/((?!_next/static|_next/image|favicon.ico).*)'],
 }
