@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { CourseCard } from '@/components/course/CourseCard'
 import { BackButton } from '@/components/ui/BackButton'
@@ -8,7 +9,7 @@ import { BackButton } from '@/components/ui/BackButton'
 export const dynamic = 'force-dynamic'
 
 export default async function SavedPage() {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
   const userId = session.user.id
 

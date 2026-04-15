@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { AppShell } from '@/components/layout/AppShell'
 import { LevelUpToast } from '@/components/ui/LevelUpToast'
@@ -11,7 +12,7 @@ export default async function AppLayout({
 }: {
   children: React.ReactNode
 }) {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
 
   if (!session) {
     redirect('/login')

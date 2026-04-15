@@ -2,7 +2,8 @@ import type { Metadata } from 'next'
 import { Inter, Nunito } from 'next/font/google'
 import './globals.css'
 import { getThemeCSSVars } from '@/lib/theme'
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
@@ -31,7 +32,7 @@ export default async function RootLayout({
   const variant = process.env.NEXT_PUBLIC_THEME_VARIANT ?? 'vA'
 
   // Apply user theme if logged in
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (session?.user?.id) {
     const prefs = await prisma.user.findUnique({
       where: { id: session.user.id },

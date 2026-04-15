@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { getXpForLevel } from '@/lib/xp'
 import {
@@ -18,7 +19,7 @@ export const dynamic = 'force-dynamic'
 const DAY_LABELS = ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
 
 export default async function HomePage() {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
   const userId = session.user.id
 

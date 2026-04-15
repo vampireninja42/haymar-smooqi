@@ -1,11 +1,12 @@
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { CourseOverview } from '@/components/lesson/CourseOverview'
 import { BackButton } from '@/components/ui/BackButton'
 
 export default async function CoursePage({ params }: { params: { courseSlug: string } }) {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
 
   const course = await prisma.course.findUnique({

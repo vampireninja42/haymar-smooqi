@@ -1,5 +1,6 @@
 import { redirect } from 'next/navigation'
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { themeConfig } from '@/lib/theme'
 import { Badge } from '@/components/ui/badge'
@@ -13,7 +14,7 @@ export default async function SubscriptionPage({
 }: {
   searchParams: Promise<{ success?: string }>
 }) {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
   const userId = session.user.id
 

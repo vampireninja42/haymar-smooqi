@@ -19,10 +19,8 @@ const protectedPaths = [
   '/onboarding',
 ]
 
-// NextAuth v5 session cookie names
+// NextAuth v4 session cookie names
 const SESSION_COOKIE_NAMES = [
-  'authjs.session-token',
-  '__Secure-authjs.session-token',
   'next-auth.session-token',
   '__Secure-next-auth.session-token',
 ]

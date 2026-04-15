@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { CourseCard } from '@/components/course/CourseCard'
 import { FilterButton } from '@/components/explore/FilterButton'
@@ -21,7 +22,7 @@ interface ExplorePageProps {
 }
 
 export default async function ExplorePage({ searchParams }: ExplorePageProps) {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
   if (!session?.user?.id) redirect('/login')
   const userId = session.user.id
 

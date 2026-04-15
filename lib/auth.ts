@@ -1,20 +1,25 @@
-import NextAuth from 'next-auth'
-import Credentials from 'next-auth/providers/credentials'
-import Google from 'next-auth/providers/google'
+import NextAuth, { NextAuthOptions } from 'next-auth'
+import GoogleProvider from 'next-auth/providers/google'
+import CredentialsProvider from 'next-auth/providers/credentials'
+import { PrismaAdapter } from '@next-auth/prisma-adapter'
 import { prisma } from './db'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { generateReferralCode } from './utils'
 
-export const { handlers, auth, signIn, signOut } = NextAuth({
-  trustHost: true,
-  session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
+export const authOptions: NextAuthOptions = {
+  adapter: PrismaAdapter(prisma),
+  session: {
+    strategy: 'jwt',
+    maxAge: 30 * 24 * 60 * 60,
+  },
   providers: [
-    Google({
+    GoogleProvider({
       clientId: process.env.GOOGLE_CLIENT_ID!,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET!,
     }),
-    Credentials({
+    CredentialsProvider({
+      name: 'credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
@@ -32,54 +37,36 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
         const valid = await bcrypt.compare(parsed.data.password, user.passwordHash)
         if (!valid) return null
 
-        return { id: user.id, email: user.email, name: user.name }
+        return { id: user.id, email: user.email, name: user.name ?? undefined }
       },
     }),
   ],
   callbacks: {
-    async jwt({ token, user, account, profile }) {
-      if (account) {
-        console.log('[JWT]', {
-          provider: account.provider,
-          tokenEmail: token.email,
-          profileEmail: (profile as { email?: string })?.email,
-          hasUser: !!user,
-          userId: user?.id,
-        })
-      }
-
-      if (account?.provider === 'credentials' && user?.id) {
-        // Credentials: user.id comes from our authorize() function — it's our real DB ID
+    async jwt({ token, user, account }) {
+      // On sign in: attach user id to token
+      if (user) {
         token.id = user.id
-        return token
       }
-
-      if (account?.provider === 'google') {
-        // Google OAuth: look up our real DB user ID by email
-        // Do NOT use user.id — it's a NextAuth-generated temporary ID, not our DB ID
-        const email = (token.email ?? (profile as { email?: string })?.email) as string | undefined
-        if (email) {
-          const dbUser = await prisma.user.findUnique({
-            where: { email },
-            select: { id: true },
-          })
-          if (dbUser) {
-            token.id = dbUser.id
-          }
-        }
-        return token
+      // For Google OAuth: ensure our DB user ID is in the token
+      if (account?.provider === 'google' && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email },
+          select: { id: true },
+        })
+        if (dbUser) token.id = dbUser.id
       }
-
-      // Subsequent requests (no account) — token.id already set, just return
       return token
     },
     async session({ session, token }) {
-      if (token.id) session.user.id = token.id as string
+      if (token.id && session.user) {
+        session.user.id = token.id as string
+      }
       return session
     },
     async signIn({ user, account }) {
-      try {
-        if (account?.provider === 'google' && user.email) {
+      // For Google OAuth: ensure user exists in our DB with referralCode
+      if (account?.provider === 'google' && user.email) {
+        try {
           const existing = await prisma.user.findUnique({ where: { email: user.email } })
           if (!existing) {
             await prisma.user.create({
@@ -92,12 +79,11 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
               },
             })
           }
+        } catch (err) {
+          console.error('[signIn] error:', err)
         }
-        return true
-      } catch (error) {
-        console.error('[Auth] signIn error:', error)
-        return true
       }
+      return true
     },
   },
   pages: {
@@ -105,4 +91,6 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     error: '/login',
     newUser: '/onboarding',
   },
-})
+}
+
+export default NextAuth(authOptions)

@@ -1,11 +1,12 @@
-import { auth } from '@/lib/auth'
+import { getServerSession } from 'next-auth'
+import { authOptions } from '@/lib/auth'
 import { AppShell } from '@/components/layout/AppShell'
 import { prisma } from '@/lib/db'
 import { Header } from '@/components/layout/Header'
 import { Footer } from '@/components/layout/Footer'
 
 export default async function BlogLayout({ children }: { children: React.ReactNode }) {
-  const session = await auth()
+  const session = await getServerSession(authOptions)
 
   if (session?.user?.id) {
     const userStats = await prisma.user.findUnique({
