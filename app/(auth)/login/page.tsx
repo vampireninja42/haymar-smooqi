@@ -54,7 +54,7 @@ export default function LoginPage() {
       if (check.needsOnboarding) {
         router.push("/onboarding")
       } else {
-        router.push("/")
+        router.push("/home")
       }
     } catch {
       setError("Something went wrong. Please try again.")
@@ -132,7 +132,7 @@ export default function LoginPage() {
           type="button"
           variant="outline"
           className="w-full rounded-[var(--button-radius)]"
-          onClick={() => signIn("google")}
+          onClick={() => signIn("google", { callbackUrl: "/home" })}
         >
           <svg className="mr-2 size-4" viewBox="0 0 24 24">
             <path
