@@ -35,6 +35,29 @@ const PATTERNS = [
   { id: 'waves', label: 'Waves' },
 ]
 
+const COLOR_MAP: Record<string, string> = {
+  purple: '#7C3AED',
+  blue: '#2563EB',
+  green: '#059669',
+  rose: '#E11D48',
+  orange: '#EA580C',
+  teal: '#0D9488',
+}
+
+const PATTERN_STYLES: Record<string, string> = {
+  solid: '',
+  dots: 'radial-gradient(circle, rgba(124,58,237,0.15) 1px, transparent 1px)',
+  grid: 'linear-gradient(rgba(124,58,237,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.08) 1px, transparent 1px)',
+  waves: 'repeating-linear-gradient(45deg, rgba(124,58,237,0.05) 0px, rgba(124,58,237,0.05) 2px, transparent 2px, transparent 10px)',
+  noise: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'n\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.9\' numOctaves=\'4\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23n)\' opacity=\'0.05\'/%3E%3C/svg%3E")',
+}
+
+const PATTERN_SIZES: Record<string, string> = {
+  dots: '20px 20px',
+  grid: '40px 40px',
+  waves: '14px 14px',
+}
+
 export default function SettingsPage() {
   const router = useRouter()
   const [settings, setSettings] = useState<UserSettings | null>(null)
@@ -81,6 +104,9 @@ export default function SettingsPage() {
 
   async function handleThemeColorChange(color: string) {
     setThemeColor(color)
+    // Apply live
+    const hex = COLOR_MAP[color] ?? '#7C3AED'
+    document.documentElement.style.setProperty('--color-primary', hex)
     await fetch('/api/user/settings', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -90,6 +116,16 @@ export default function SettingsPage() {
 
   async function handlePatternChange(pattern: string) {
     setBgPattern(pattern)
+    // Apply live to body
+    const bodyEl = document.body
+    const style = PATTERN_STYLES[pattern] ?? ''
+    if (pattern === 'solid' || !style) {
+      bodyEl.style.backgroundImage = ''
+      bodyEl.style.backgroundSize = ''
+    } else {
+      bodyEl.style.backgroundImage = style
+      bodyEl.style.backgroundSize = PATTERN_SIZES[pattern] ?? 'auto'
+    }
     await fetch('/api/user/settings', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
@@ -224,7 +260,7 @@ export default function SettingsPage() {
         </div>
 
         <p className="text-xs text-gray-400 mt-3">
-          {'\uD83D\uDCA1'} Theme changes apply when you navigate to a new page.
+          {'\uD83D\uDCA1'} Theme changes apply instantly.
         </p>
       </div>
 

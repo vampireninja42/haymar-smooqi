@@ -2,6 +2,7 @@ import Link from 'next/link'
 import { prisma } from '@/lib/db'
 import { BackButton } from '@/components/ui/BackButton'
 import { TopicIllustration } from '@/components/blog/TopicIllustration'
+import { EmailSignup } from '@/components/blog/EmailSignup'
 
 export const dynamic = 'force-dynamic'
 
@@ -31,23 +32,26 @@ export default async function BlogPage() {
       )}
 
       {featured && (
-        <Link href={`/blog/${featured.slug}`} className="mb-8 block">
-          <div className="rounded-2xl overflow-hidden glass-card flex flex-col md:flex-row gap-0 hover:shadow-lg transition-shadow">
-            <TopicIllustration topic={featured.topic} className="h-48 md:h-auto md:w-64 flex-shrink-0" />
-            <div className="p-6 flex flex-col justify-between">
-              <div>
-                <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-primary)' }}>
+        <Link href={`/blog/${featured.slug}`} className="mb-10 block group">
+          <div className="rounded-2xl overflow-hidden glass-card hover:shadow-xl transition-shadow">
+            <div className="relative h-64 w-full">
+              <TopicIllustration topic={featured.topic} className="h-64 w-full rounded-none" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent" />
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <span className="text-xs font-semibold uppercase tracking-wide text-white/80">
                   {featured.topic}
                 </span>
-                <h2 className="text-xl font-bold text-gray-900 mt-2 mb-3">{featured.title}</h2>
-                <p className="text-gray-600 text-sm line-clamp-3">{featured.excerpt}</p>
+                <h2 className="text-2xl font-bold text-white mt-1">{featured.title}</h2>
               </div>
+            </div>
+            <div className="p-6">
+              <p className="text-gray-600 text-sm line-clamp-2">{featured.excerpt}</p>
               <div className="flex items-center justify-between mt-4">
                 <span className="text-xs text-gray-400">
                   {featured.readingTime} min read &middot;{' '}
                   {new Date(featured.publishedAt).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
                 </span>
-                <span className="text-xs font-semibold" style={{ color: 'var(--color-primary)' }}>Read &rarr;</span>
+                <span className="text-xs font-semibold group-hover:underline" style={{ color: 'var(--color-primary)' }}>Read &rarr;</span>
               </div>
             </div>
           </div>
@@ -74,6 +78,18 @@ export default async function BlogPage() {
           ))}
         </div>
       )}
+
+      {/* Email signup */}
+      <div className="mt-16 rounded-2xl p-8 text-center" style={{ background: 'linear-gradient(135deg, #7C3AED 0%, #4F46E5 100%)' }}>
+        <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-full bg-white/20">
+          <svg className="h-6 w-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+        </div>
+        <h3 className="text-xl font-bold text-white">Get smarter every week</h3>
+        <p className="mt-2 text-sm text-white/80">Join 10,000+ learners. One article + one actionable tip, every Tuesday.</p>
+        <EmailSignup />
+      </div>
     </div>
   )
 }

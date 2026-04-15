@@ -37,6 +37,39 @@ export function SolutionSection({ learnerCount }: SolutionSectionProps) {
             people building smarter habits
           </p>
         </motion.div>
+
+        {/* Feature grid */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.2 }}
+          className="mt-16 grid grid-cols-1 gap-6 sm:grid-cols-3"
+        >
+          {[
+            {
+              icon: '\u26A1',
+              title: '5\u201315 min lessons',
+              desc: 'Bite-sized so you actually finish them. No more half-read articles.',
+            },
+            {
+              icon: '\uD83D\uDD25',
+              title: 'Streaks & XP',
+              desc: 'Game mechanics that make daily learning feel like progress, not homework.',
+            },
+            {
+              icon: '\uD83E\uDDE0',
+              title: '195+ topics',
+              desc: 'From quantum physics to confident parenting. One app, every curiosity.',
+            },
+          ].map((f) => (
+            <div key={f.title} className="rounded-2xl border border-border bg-card p-6 text-center shadow-sm">
+              <span className="text-4xl">{f.icon}</span>
+              <h3 className="mt-4 text-base font-semibold">{f.title}</h3>
+              <p className="mt-2 text-sm text-muted-foreground">{f.desc}</p>
+            </div>
+          ))}
+        </motion.div>
       </div>
     </section>
   );

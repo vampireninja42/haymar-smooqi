@@ -36,62 +36,38 @@ export function ProblemSection() {
             transition={{ duration: 0.5, delay: 0.2 }}
             className="flex justify-center"
           >
-            {/* Visual placeholder: scattered bookmarks / tabs */}
-            <svg
-              viewBox="0 0 320 280"
-              fill="none"
-              className="h-auto w-full max-w-[320px]"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              {/* Scattered browser tabs */}
-              <rect
-                x="10"
-                y="20"
-                width="180"
-                height="120"
-                rx="8"
-                fill="#f3f4f6"
-                stroke="#d1d5db"
-                strokeWidth="1.5"
-                transform="rotate(-6 10 20)"
-              />
-              <rect
-                x="80"
-                y="40"
-                width="180"
-                height="120"
-                rx="8"
-                fill="#f9fafb"
-                stroke="#d1d5db"
-                strokeWidth="1.5"
-                transform="rotate(3 80 40)"
-              />
-              <rect
-                x="50"
-                y="80"
-                width="180"
-                height="120"
-                rx="8"
-                fill="white"
-                stroke="#d1d5db"
-                strokeWidth="1.5"
-                transform="rotate(-2 50 80)"
-              />
-              {/* Tab bars */}
-              <rect x="58" y="88" width="60" height="6" rx="3" fill="#e5e7eb" />
-              <rect x="58" y="100" width="140" height="4" rx="2" fill="#f3f4f6" />
-              <rect x="58" y="110" width="120" height="4" rx="2" fill="#f3f4f6" />
-              <rect x="58" y="120" width="100" height="4" rx="2" fill="#f3f4f6" />
-              {/* Red X marks */}
-              <text x="200" y="60" fontSize="20" fill="#ef4444" opacity="0.7">
-                x
-              </text>
-              <text x="140" y="170" fontSize="20" fill="#ef4444" opacity="0.7">
-                x
-              </text>
-              <text x="250" y="130" fontSize="20" fill="#ef4444" opacity="0.7">
-                x
-              </text>
+            <svg viewBox="0 0 360 300" fill="none" className="h-auto w-full max-w-[360px]" xmlns="http://www.w3.org/2000/svg">
+              {/* Card 1 — background, rotated left */}
+              <rect x="20" y="30" width="200" height="130" rx="12" fill="#F3F4F6" stroke="#E5E7EB" strokeWidth="1.5" transform="rotate(-8 20 30)" />
+              <rect x="38" y="48" width="80" height="8" rx="4" fill="#E5E7EB" transform="rotate(-8 38 48)" />
+              <rect x="38" y="62" width="140" height="6" rx="3" fill="#F3F4F6" transform="rotate(-8 38 62)" />
+              <rect x="38" y="74" width="120" height="6" rx="3" fill="#F3F4F6" transform="rotate(-8 38 74)" />
+              <rect x="38" y="86" width="100" height="6" rx="3" fill="#F3F4F6" transform="rotate(-8 38 86)" />
+              {/* Card 2 — middle, slight tilt right */}
+              <rect x="80" y="50" width="210" height="135" rx="12" fill="#F9FAFB" stroke="#E5E7EB" strokeWidth="1.5" transform="rotate(4 80 50)" />
+              <rect x="96" y="66" width="90" height="8" rx="4" fill="#E5E7EB" transform="rotate(4 96 66)" />
+              <rect x="96" y="80" width="155" height="6" rx="3" fill="#F3F4F6" transform="rotate(4 96 80)" />
+              <rect x="96" y="92" width="130" height="6" rx="3" fill="#F3F4F6" transform="rotate(4 96 92)" />
+              <rect x="96" y="104" width="110" height="6" rx="3" fill="#F3F4F6" transform="rotate(4 96 104)" />
+              {/* Card 3 — front, straight */}
+              <rect x="55" y="100" width="215" height="138" rx="12" fill="white" stroke="#D1D5DB" strokeWidth="1.5" />
+              <rect x="72" y="116" width="95" height="9" rx="4" fill="#E5E7EB" />
+              <rect x="72" y="132" width="160" height="6" rx="3" fill="#F3F4F6" />
+              <rect x="72" y="144" width="140" height="6" rx="3" fill="#F3F4F6" />
+              <rect x="72" y="156" width="120" height="6" rx="3" fill="#F3F4F6" />
+              <rect x="72" y="168" width="100" height="6" rx="3" fill="#F3F4F6" />
+              {/* Red X badges */}
+              <circle cx="252" cy="78" r="14" fill="#FEE2E2" />
+              <text x="246" y="84" fontSize="14" fontWeight="bold" fill="#EF4444">{'\u2715'}</text>
+              <circle cx="290" cy="148" r="14" fill="#FEE2E2" />
+              <text x="284" y="154" fontSize="14" fontWeight="bold" fill="#EF4444">{'\u2715'}</text>
+              <circle cx="175" cy="230" r="14" fill="#FEE2E2" />
+              <text x="169" y="236" fontSize="14" fontWeight="bold" fill="#EF4444">{'\u2715'}</text>
+              {/* Tiny decorative dots */}
+              <circle cx="30" cy="200" r="3" fill="#E5E7EB" />
+              <circle cx="320" cy="60" r="3" fill="#E5E7EB" />
+              <circle cx="340" cy="200" r="4" fill="#EDE9FE" />
+              <circle cx="15" cy="130" r="4" fill="#EDE9FE" />
             </svg>
           </motion.div>
         </div>
