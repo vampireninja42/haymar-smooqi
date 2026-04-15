@@ -55,8 +55,8 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
     <div className="space-y-4">
       {topicSelections.map((ts) => {
         const colors = themeConfig.topicColors[ts.topic.slug] ?? { bg: '#F3F4F6', text: '#374151' }
-        const visibleCourses = ts.topic.courses.slice(0, 4)
-        const remainingCount = ts.topic.courses.length - 4
+        const visibleCourses = ts.topic.courses.slice(0, 5)
+        const remainingCount = ts.topic.courses.length - 5
 
         return (
           <div
@@ -66,7 +66,7 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
           >
             {/* Colored header band */}
             <div
-              className="flex items-center gap-2.5 px-3 py-2.5"
+              className="flex items-center gap-2.5 px-3 py-2"
               style={{ backgroundColor: colors.bg }}
             >
               <span className="text-xl">{ts.topic.icon}</span>
@@ -87,18 +87,17 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
                 <Link
                   key={course.id}
                   href={`/learn/${course.slug}`}
-                  className="flex items-center gap-3 py-2 group"
+                  className="flex items-center gap-2 py-1.5 group hover:bg-gray-50/50 rounded transition-colors"
                 >
                   <span
-                    className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
+                    className="flex h-4 w-4 flex-shrink-0 items-center justify-center rounded-full text-[9px] font-bold text-white"
                     style={{ backgroundColor: colors.text }}
                   >
                     {idx + 1}
                   </span>
-                  <span className="flex-1 text-sm text-gray-700 group-hover:text-[var(--color-primary)] transition-colors">
+                  <span className="flex-1 text-xs font-medium text-gray-700 group-hover:text-[var(--color-primary)] transition-colors">
                     {course.title}
                   </span>
-                  <span className="text-gray-400 text-xs">&rarr;</span>
                 </Link>
               ))}
             </div>

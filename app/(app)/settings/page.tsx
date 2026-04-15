@@ -222,6 +222,10 @@ export default function SettingsPage() {
             </button>
           ))}
         </div>
+
+        <p className="text-xs text-gray-400 mt-3">
+          {'\uD83D\uDCA1'} Theme changes apply when you navigate to a new page.
+        </p>
       </div>
 
       {/* Account - Change Password (email users only) */}

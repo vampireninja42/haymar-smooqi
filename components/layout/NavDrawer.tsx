@@ -20,6 +20,7 @@ interface NavDrawerProps {
 const navItems = [
   { label: 'Home', href: '/home', icon: '🏠' },
   { label: 'Explore', href: '/explore', icon: '🔍' },
+  { label: 'Saved', href: '/saved', icon: '🔖' },
   { label: 'Word Games', href: '/word-games', icon: '🎮' },
   { label: 'Leaderboard', href: '/leaderboard', icon: '🏆' },
   { label: 'Reports', href: '/reports', icon: '📊' },
