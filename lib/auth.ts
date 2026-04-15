@@ -38,34 +38,39 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
   ],
   callbacks: {
     async jwt({ token, user, account, profile }) {
-      // Debug logging — helps diagnose OAuth issues in Railway logs
       if (account) {
         console.log('[JWT]', {
           provider: account.provider,
           tokenEmail: token.email,
           profileEmail: (profile as { email?: string })?.email,
           hasUser: !!user,
+          userId: user?.id,
         })
       }
 
-      // Credentials login — user.id is set directly by authorize()
-      if (user?.id) {
+      if (account?.provider === 'credentials' && user?.id) {
+        // Credentials: user.id comes from our authorize() function — it's our real DB ID
         token.id = user.id
         return token
       }
 
-      // Google OAuth — look up our DB user ID by email
       if (account?.provider === 'google') {
+        // Google OAuth: look up our real DB user ID by email
+        // Do NOT use user.id — it's a NextAuth-generated temporary ID, not our DB ID
         const email = (token.email ?? (profile as { email?: string })?.email) as string | undefined
         if (email) {
           const dbUser = await prisma.user.findUnique({
             where: { email },
             select: { id: true },
           })
-          if (dbUser) token.id = dbUser.id
+          if (dbUser) {
+            token.id = dbUser.id
+          }
         }
+        return token
       }
 
+      // Subsequent requests (no account) — token.id already set, just return
       return token
     },
     async session({ session, token }) {
