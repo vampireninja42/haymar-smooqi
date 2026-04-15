@@ -1425,6 +1425,139 @@ async function seedDailyChallenges() {
 }
 
 // ---------------------------------------------------------------------------
+// Blog Posts
+// ---------------------------------------------------------------------------
+async function seedBlogPosts() {
+  console.log('Seeding blog posts...');
+
+  const posts = [
+    {
+      slug: 'why-microlearning-works',
+      title: 'Why Microlearning Works: The Science Behind Bite-Sized Lessons',
+      excerpt:
+        'Research shows that short, focused learning sessions boost retention by up to 80%. Here is why Smooqi is built around this principle.',
+      topic: 'Learning Science',
+      readingTime: 5,
+      featured: true,
+      publishedAt: new Date('2025-12-01'),
+      content: `## The Problem with Traditional Learning
+
+Most of us grew up with hour-long lectures and thick textbooks. But cognitive science tells a different story about how we actually learn best.
+
+## What Is Microlearning?
+
+Microlearning breaks complex topics into focused, bite-sized modules that take 5-10 minutes to complete. Each module targets a single concept or skill.
+
+### Key Benefits
+
+- **Higher retention**: Spaced repetition combined with short sessions dramatically improves long-term memory
+- **Lower cognitive load**: Your working memory can only handle so much at once
+- **Better engagement**: Short lessons feel achievable, keeping motivation high
+- **Fits busy schedules**: Anyone can find 10 minutes in their day
+
+## The Research
+
+Studies from the Journal of Applied Psychology found that microlearning produces 17% more efficient knowledge transfer compared to traditional methods.
+
+## How Smooqi Uses This
+
+Every Smooqi lesson is designed as a series of swipeable slides, each focusing on one key idea. After the slides, a quick quiz reinforces what you learned. Over time, our spaced repetition system brings back concepts right before you would forget them.
+
+## Start Learning Today
+
+The best time to start building a learning habit is now. Pick a topic that interests you and try your first lesson.`,
+    },
+    {
+      slug: 'building-a-learning-streak',
+      title: 'How to Build a Learning Streak That Actually Sticks',
+      excerpt:
+        'Streaks are more than vanity metrics. Learn how daily consistency compounds into real knowledge over time.',
+      topic: 'Productivity',
+      readingTime: 4,
+      featured: false,
+      publishedAt: new Date('2025-12-15'),
+      content: `## Why Streaks Matter
+
+A learning streak is not just a number. It represents a habit forming in your brain. After 21 days of consistent practice, the neural pathways strengthen and learning becomes automatic.
+
+## Tips for Maintaining Your Streak
+
+1. **Set a daily reminder**: Choose a specific time each day for your lesson
+2. **Start small**: Even one lesson per day counts
+3. **Stack habits**: Pair your Smooqi session with an existing habit like morning coffee
+4. **Forgive slip-ups**: Missing one day does not erase your progress
+
+## The Compound Effect
+
+Imagine learning just one new concept per day. That is 365 concepts per year, and over 1,000 in three years. Small, consistent efforts lead to extraordinary results.
+
+## Smooqi Streaks
+
+Smooqi tracks your daily streak automatically. Complete at least one lesson per day to keep it alive. Your streak badge appears on your profile and the leaderboard, motivating you and inspiring others.
+
+## Get Started
+
+Open Smooqi, pick a topic, and complete your first lesson today. Your future self will thank you.`,
+    },
+    {
+      slug: 'top-5-topics-for-personal-growth',
+      title: 'Top 5 Topics for Personal Growth in 2026',
+      excerpt:
+        'From psychology to personal finance, these are the most impactful subjects you can study this year.',
+      topic: 'Personal Growth',
+      readingTime: 6,
+      featured: false,
+      publishedAt: new Date('2026-01-10'),
+      content: `## Why Personal Growth Matters
+
+Investing in yourself is the highest-return investment you can make. Here are five topics that deliver outsized results.
+
+## 1. Psychology & Mindset
+
+Understanding how your mind works gives you superpowers. Learn about cognitive biases, emotional intelligence, and growth mindset to make better decisions every day.
+
+## 2. Communication Skills
+
+Whether in your career or personal life, clear and confident communication opens doors. Master active listening, persuasion, and public speaking fundamentals.
+
+## 3. Personal Finance
+
+Financial literacy is rarely taught in school, but it shapes your entire life. Learn budgeting, investing basics, and the power of compound interest.
+
+## 4. Philosophy
+
+The great thinkers asked questions we still wrestle with today. Studying philosophy sharpens your critical thinking and helps you live more intentionally.
+
+## 5. Biology
+
+Understanding the science of your own body helps you make better health, nutrition, and lifestyle choices. From genetics to neuroscience, biology is endlessly fascinating.
+
+## Start Your Journey
+
+All five of these topics are available on Smooqi with beginner-friendly courses. Pick the one that excites you most and dive in.`,
+    },
+  ];
+
+  for (const post of posts) {
+    await prisma.blogPost.upsert({
+      where: { slug: post.slug },
+      update: {
+        title: post.title,
+        excerpt: post.excerpt,
+        content: post.content,
+        topic: post.topic,
+        readingTime: post.readingTime,
+        featured: post.featured,
+        publishedAt: post.publishedAt,
+      },
+      create: post,
+    });
+  }
+
+  console.log(`  Seeded ${posts.length} blog posts.`);
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
@@ -1436,6 +1569,7 @@ async function main() {
   await seedWordGames();
   await seedTalkWithCharisma();
   await seedDailyChallenges();
+  await seedBlogPosts();
 
   console.log('\nSeed completed successfully!');
 }

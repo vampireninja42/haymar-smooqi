@@ -1,14 +1,12 @@
 import NextAuth from 'next-auth'
 import Credentials from 'next-auth/providers/credentials'
 import Google from 'next-auth/providers/google'
-import { PrismaAdapter } from '@auth/prisma-adapter'
 import { prisma } from './db'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { generateReferralCode } from './utils'
 
 export const { handlers, auth, signIn, signOut } = NextAuth({
-  adapter: PrismaAdapter(prisma),
   trustHost: true,
   session: { strategy: 'jwt', maxAge: 30 * 24 * 60 * 60 },
   providers: [
@@ -39,8 +37,17 @@ export const { handlers, auth, signIn, signOut } = NextAuth({
     }),
   ],
   callbacks: {
-    async jwt({ token, user }) {
-      if (user) token.id = user.id
+    async jwt({ token, user, account }) {
+      if (user) {
+        token.id = user.id
+      }
+      if (account?.provider === 'google' && token.email) {
+        const dbUser = await prisma.user.findUnique({
+          where: { email: token.email as string },
+          select: { id: true },
+        })
+        if (dbUser) token.id = dbUser.id
+      }
       return token
     },
     async session({ session, token }) {

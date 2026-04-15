@@ -3,6 +3,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { AppShell } from '@/components/layout/AppShell'
 import { LevelUpToast } from '@/components/ui/LevelUpToast'
+import { AchievementToast } from '@/components/ui/AchievementToast'
 
 export default async function AppLayout({
   children,
@@ -55,6 +56,7 @@ export default async function AppLayout({
 
       {/* Level up celebration toast */}
       <LevelUpToast />
+      <AchievementToast />
     </div>
   )
 }
