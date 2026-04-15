@@ -158,12 +158,26 @@ export function LessonPlayer({ lesson, userId }: LessonPlayerProps) {
       if (prev.phase !== 'slides') return prev
       if (prev.currentSlide < totalSlides - 1) {
         setDirection(1)
-        return { ...prev, currentSlide: prev.currentSlide + 1 }
+        const newSlide = prev.currentSlide + 1
+        // Track slide progress (fire and forget)
+        if (newSlide > 0) {
+          fetch('/api/progress', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              courseId: lesson.course.id,
+              lessonId: lesson.id,
+              type: 'slide_progress',
+              slidesCompleted: newSlide,
+            }),
+          }).catch(() => {})
+        }
+        return { ...prev, currentSlide: newSlide }
       }
       // Last slide -> complete
       return { phase: 'complete' }
     })
-  }, [totalSlides])
+  }, [totalSlides, lesson.course.id, lesson.id])
 
   const prevSlide = useCallback(() => {
     setState((prev) => {

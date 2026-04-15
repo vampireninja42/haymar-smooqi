@@ -27,7 +27,11 @@ export default async function BlogPage() {
       </div>
 
       {posts.length === 0 && (
-        <p className="mt-12 text-center text-gray-400">No posts yet. Check back soon!</p>
+        <div className="text-center py-20">
+          <p className="text-4xl mb-4">{'\u270D\uFE0F'}</p>
+          <p className="text-lg font-semibold text-gray-900">Coming soon</p>
+          <p className="text-sm text-gray-500 mt-2">We&apos;re working on our first posts. Check back soon!</p>
+        </div>
       )}
 
       {featured && (

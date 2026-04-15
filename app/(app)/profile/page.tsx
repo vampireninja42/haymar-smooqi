@@ -6,6 +6,8 @@ import { Badge } from '@/components/ui/badge'
 import { Separator } from '@/components/ui/separator'
 import { ProfileEditForm } from './ProfileEditForm'
 import { BackButton } from '@/components/ui/BackButton'
+import { TopicSelector } from '@/components/profile/TopicSelector'
+import Link from 'next/link'
 
 export const dynamic = 'force-dynamic'
 
@@ -36,7 +38,7 @@ export default async function ProfilePage() {
   if (!session?.user?.id) redirect('/login')
   const userId = session.user.id
 
-  const [user, recentAchievements, topicSelections] = await Promise.all([
+  const [user, recentAchievements, topicSelections, allTopics] = await Promise.all([
     prisma.user.findUnique({
       where: { id: userId },
       select: {
@@ -65,6 +67,10 @@ export default async function ProfilePage() {
       where: { userId },
       include: { topic: { select: { name: true, icon: true, slug: true } } },
       orderBy: { position: 'asc' },
+    }),
+    prisma.topic.findMany({
+      orderBy: { sortOrder: 'asc' },
+      select: { id: true, slug: true, name: true, icon: true },
     }),
   ])
 
@@ -171,15 +177,19 @@ export default async function ProfilePage() {
       )}
 
       {/* Selected topics */}
-      {topicSelections.length > 0 && (
-        <div
-          className={`rounded-[var(--card-radius)] p-4 shadow-sm ${
-            themeConfig.isVA ? 'glass-card' : 'bg-white'
-          }`}
-        >
-          <h3 className="mb-3 text-sm font-semibold text-gray-700">
-            Selected Topics
-          </h3>
+      <div
+        className={`rounded-[var(--card-radius)] p-4 shadow-sm ${
+          themeConfig.isVA ? 'glass-card' : 'bg-white'
+        }`}
+      >
+        <div className="flex items-center justify-between mb-3">
+          <h3 className="text-sm font-semibold text-gray-700">Your Topics</h3>
+          <TopicSelector
+            allTopics={allTopics}
+            selectedSlugs={topicSelections.map((ts) => ts.topic.slug)}
+          />
+        </div>
+        {topicSelections.length > 0 ? (
           <div className="flex flex-wrap gap-2">
             {topicSelections.map((ts) => (
               <span
@@ -194,8 +204,29 @@ export default async function ProfilePage() {
               </span>
             ))}
           </div>
+        ) : (
+          <p className="text-xs text-gray-500">No topics selected yet. Tap &quot;+ Add topics&quot; above.</p>
+        )}
+      </div>
+
+      {/* Invite Friends CTA */}
+      <Link href="/invite" className="block">
+        <div
+          className="rounded-[var(--card-radius)] p-5 text-white"
+          style={{
+            background: 'linear-gradient(135deg, var(--color-primary), #6D28D9)',
+          }}
+        >
+          <div className="flex items-center gap-3">
+            <span className="text-2xl">{'\uD83C\uDF81'}</span>
+            <div>
+              <p className="font-bold">Invite Friends</p>
+              <p className="text-sm opacity-90">Share Smooqi and both get 7 days Premium</p>
+            </div>
+            <span className="ml-auto text-lg">&rarr;</span>
+          </div>
         </div>
-      )}
+      </Link>
 
       <Separator />
 

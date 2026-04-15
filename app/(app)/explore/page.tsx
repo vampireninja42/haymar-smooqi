@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { CourseCard } from '@/components/course/CourseCard'
+import { FilterButton } from '@/components/explore/FilterButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -81,17 +82,7 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
     return `/explore?${p.toString()}`
   }
 
-  const levels = [
-    { value: 'beginner', label: 'Beginner' },
-    { value: 'intermediate', label: 'Intermediate' },
-    { value: 'advanced', label: 'Advanced' },
-  ]
-
-  const sortOptions = [
-    { value: 'popular', label: 'Popular' },
-    { value: 'newest', label: 'Newest' },
-    { value: 'level', label: 'By Level' },
-  ]
+  const activeFilterCount = [topicFilter, levelFilter, accessFilter].filter(Boolean).length
 
   return (
     <div className="mx-auto max-w-5xl">
@@ -100,7 +91,7 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
         Discover new topics and grow your skills.
       </p>
 
-      {/* Search bar + sort row */}
+      {/* Search bar + filter button */}
       <div className="mt-4 flex items-center gap-3">
         <form className="flex-1">
           <div className="relative">
@@ -126,97 +117,11 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
           </div>
         </form>
 
-        {/* Sort pills */}
-        <div className="flex shrink-0 gap-1">
-          {sortOptions.map((opt) => (
-            <Link
-              key={opt.value}
-              href={filterUrl({ sort: opt.value, page: '1' })}
-              className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-                sort === opt.value
-                  ? 'bg-[var(--color-primary)] text-white'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-              }`}
-            >
-              {opt.label}
-            </Link>
-          ))}
-        </div>
-      </div>
-
-      {/* Topic filter pills - horizontal scrollable */}
-      <div className="mt-4 flex gap-2 overflow-x-auto pb-1 scrollbar-none">
-        <Link
-          href={filterUrl({ topic: '', page: '1' })}
-          className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-            !topicFilter
-              ? 'bg-[var(--color-primary)] text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
-        >
-          All
-        </Link>
-        {topics.map((t) => (
-          <Link
-            key={t.slug}
-            href={filterUrl({ topic: t.slug, page: '1' })}
-            className={`shrink-0 rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-              topicFilter === t.slug
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {t.icon} {t.name}
-          </Link>
-        ))}
-      </div>
-
-      {/* Level filter pills */}
-      <div className="mt-2 flex gap-2">
-        <Link
-          href={filterUrl({ level: '', page: '1' })}
-          className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-            !levelFilter
-              ? 'bg-[var(--color-primary)] text-white'
-              : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-          }`}
-        >
-          All
-        </Link>
-        {levels.map((lv) => (
-          <Link
-            key={lv.value}
-            href={filterUrl({ level: lv.value, page: '1' })}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-              levelFilter === lv.value
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {lv.label}
-          </Link>
-        ))}
-      </div>
-
-      {/* Access filter pills */}
-      <div className="mt-2 flex gap-2">
-        {[
-          { value: '', label: 'All' },
-          { value: 'free', label: 'Free' },
-          { value: 'premium', label: 'Premium' },
-        ].map((opt) => (
-          <Link
-            key={opt.value}
-            href={filterUrl({ access: opt.value, page: '1' })}
-            className={`rounded-full px-3 py-1.5 text-xs font-medium transition-colors ${
-              accessFilter === opt.value
-                ? 'bg-[var(--color-primary)] text-white'
-                : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
-            }`}
-          >
-            {opt.label}
-          </Link>
-        ))}
+        <FilterButton
+          topics={topics.map((t) => ({ slug: t.slug, name: t.name, icon: t.icon }))}
+          totalCount={totalCount}
+          activeFilterCount={activeFilterCount}
+        />
       </div>
 
       {/* Course grid */}

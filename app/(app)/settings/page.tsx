@@ -18,11 +18,22 @@ type UserSettings = {
   subscriptionPlan: string | null
 }
 
-const THEME_MODES = [
-  { value: 'light', label: 'Light', icon: '☀️' },
-  { value: 'dark', label: 'Dark', icon: '🌙' },
-  { value: 'system', label: 'System', icon: '💻' },
-] as const
+const THEME_COLORS = [
+  { id: 'purple', label: 'Purple', primary: '#7C3AED', light: '#EDE9FE' },
+  { id: 'blue', label: 'Blue', primary: '#2563EB', light: '#EFF6FF' },
+  { id: 'green', label: 'Green', primary: '#059669', light: '#F0FDF4' },
+  { id: 'orange', label: 'Orange', primary: '#F97316', light: '#FFF7ED' },
+  { id: 'pink', label: 'Pink', primary: '#EC4899', light: '#FDF2F8' },
+  { id: 'teal', label: 'Teal', primary: '#0D9488', light: '#F0FDFA' },
+]
+
+const PATTERNS = [
+  { id: 'holographic', label: 'Holographic' },
+  { id: 'solid', label: 'Solid' },
+  { id: 'dots', label: 'Dots' },
+  { id: 'grid', label: 'Grid' },
+  { id: 'waves', label: 'Waves' },
+]
 
 export default function SettingsPage() {
   const router = useRouter()
@@ -30,7 +41,8 @@ export default function SettingsPage() {
   const [loading, setLoading] = useState(true)
 
   // Theme
-  const [themeMode, setThemeMode] = useState('light')
+  const [themeColor, setThemeColor] = useState('purple')
+  const [bgPattern, setBgPattern] = useState('solid')
 
   // Password
   const [currentPassword, setCurrentPassword] = useState('')
@@ -54,7 +66,8 @@ export default function SettingsPage() {
         if (res.ok) {
           const data = await res.json()
           setSettings(data)
-          setThemeMode(data.themeMode)
+          setThemeColor(data.themeColor ?? 'purple')
+          setBgPattern(data.backgroundPattern ?? 'solid')
           setNotifications(data.notificationsEnabled)
         }
       } catch {
@@ -66,12 +79,21 @@ export default function SettingsPage() {
     fetchSettings()
   }, [])
 
-  async function handleThemeChange(mode: string) {
-    setThemeMode(mode)
+  async function handleThemeColorChange(color: string) {
+    setThemeColor(color)
     await fetch('/api/user/settings', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ themeMode: mode }),
+      body: JSON.stringify({ themeColor: color }),
+    })
+  }
+
+  async function handlePatternChange(pattern: string) {
+    setBgPattern(pattern)
+    await fetch('/api/user/settings', {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ backgroundPattern: pattern }),
     })
   }
 
@@ -160,20 +182,43 @@ export default function SettingsPage() {
           themeConfig.isVA ? 'glass-card' : 'bg-white'
         }`}
       >
-        <h3 className="mb-3 text-sm font-semibold text-gray-700">Appearance</h3>
-        <div className="flex gap-2">
-          {THEME_MODES.map((mode) => (
+        <h3 className="mb-3 text-sm font-semibold text-gray-700">Theme Color</h3>
+        <div className="flex gap-3">
+          {THEME_COLORS.map((c) => (
             <button
-              key={mode.value}
-              onClick={() => handleThemeChange(mode.value)}
+              key={c.id}
+              onClick={() => handleThemeColorChange(c.id)}
               className={cn(
-                'flex-1 rounded-[var(--button-radius)] px-3 py-2.5 text-sm font-medium transition-colors border',
-                themeMode === mode.value
+                'relative h-8 w-8 rounded-full transition-all',
+                themeColor === c.id ? 'ring-2 ring-offset-2' : 'hover:scale-110'
+              )}
+              style={{
+                backgroundColor: c.primary,
+                outlineColor: c.primary,
+              }}
+              aria-label={c.label}
+            >
+              {themeColor === c.id && (
+                <span className="absolute inset-0 flex items-center justify-center text-white text-xs font-bold">{'\u2713'}</span>
+              )}
+            </button>
+          ))}
+        </div>
+
+        <h3 className="mb-3 mt-5 text-sm font-semibold text-gray-700">Background</h3>
+        <div className="flex gap-2">
+          {PATTERNS.map((p) => (
+            <button
+              key={p.id}
+              onClick={() => handlePatternChange(p.id)}
+              className={cn(
+                'flex-1 rounded-lg border px-2 py-2 text-[11px] font-medium transition-colors text-center',
+                bgPattern === p.id
                   ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)] text-gray-900'
                   : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50'
               )}
             >
-              <span className="mr-1">{mode.icon}</span> {mode.label}
+              {p.label}
             </button>
           ))}
         </div>

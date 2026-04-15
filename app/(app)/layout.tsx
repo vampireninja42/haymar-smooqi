@@ -4,6 +4,7 @@ import { prisma } from '@/lib/db'
 import { AppShell } from '@/components/layout/AppShell'
 import { LevelUpToast } from '@/components/ui/LevelUpToast'
 import { AchievementToast } from '@/components/ui/AchievementToast'
+import type { NotificationItem } from '@/components/ui/NotificationDrawer'
 
 export default async function AppLayout({
   children,
@@ -29,13 +30,56 @@ export default async function AppLayout({
     image: session.user?.image ?? undefined,
   }
 
+  // Build notifications from user data
+  const notifications: NotificationItem[] = []
+  const streak = userStats?.currentStreak ?? 0
+  const level = userStats?.level ?? 1
+
+  if (streak > 0) {
+    notifications.push({
+      id: 'streak',
+      icon: '\uD83D\uDD25',
+      text: `You're on a ${streak}-day streak! Keep it up!`,
+      timeAgo: 'Today',
+    })
+  }
+  if (level > 1) {
+    notifications.push({
+      id: 'level',
+      icon: '\u26A1',
+      text: `You reached Level ${level}!`,
+      timeAgo: 'Recent',
+    })
+  }
+
+  if (userId) {
+    const sevenDaysAgo = new Date()
+    sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7)
+    const recentAchievements = await prisma.userAchievement.findMany({
+      where: { userId, unlockedAt: { gte: sevenDaysAgo } },
+      include: { achievement: true },
+      orderBy: { unlockedAt: 'desc' },
+      take: 5,
+    })
+    for (const ua of recentAchievements) {
+      const daysAgo = Math.floor((Date.now() - new Date(ua.unlockedAt).getTime()) / 86400000)
+      notifications.push({
+        id: ua.id,
+        icon: '\uD83C\uDFC5',
+        text: `${ua.achievement.name} unlocked!`,
+        timeAgo: daysAgo === 0 ? 'Today' : daysAgo === 1 ? 'Yesterday' : `${daysAgo}d ago`,
+      })
+    }
+  }
+
   return (
     <div className="app-shell min-h-screen">
       <AppShell
         userName={user.name}
         userImage={user.image}
-        streak={userStats?.currentStreak ?? 0}
-        level={userStats?.level ?? 1}
+        streak={streak}
+        level={level}
+        notifications={notifications}
       />
 
       {/* Decorative background dots (vA only) */}
