@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { CourseOverview } from '@/components/lesson/CourseOverview'
+import { BackButton } from '@/components/ui/BackButton'
 
 export default async function CoursePage({ params }: { params: { courseSlug: string } }) {
   const session = await auth()
@@ -42,10 +43,13 @@ export default async function CoursePage({ params }: { params: { courseSlug: str
   }
 
   return (
-    <CourseOverview
-      course={course}
-      progress={progress}
-      isUserFree={!isPremium}
-    />
+    <>
+      <BackButton href="/explore" />
+      <CourseOverview
+        course={course}
+        progress={progress}
+        isUserFree={!isPremium}
+      />
+    </>
   )
 }

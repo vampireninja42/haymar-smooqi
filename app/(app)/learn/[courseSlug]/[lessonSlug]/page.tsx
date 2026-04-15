@@ -2,6 +2,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { redirect } from 'next/navigation'
 import { LessonPlayer } from '@/components/lesson/LessonPlayer'
+import { BackButton } from '@/components/ui/BackButton'
 
 export default async function LessonPage({ params }: { params: { courseSlug: string; lessonSlug: string } }) {
   const session = await auth()
@@ -36,10 +37,13 @@ export default async function LessonPage({ params }: { params: { courseSlug: str
   })
 
   return (
-    <LessonPlayer
-      lesson={lesson}
-      initialProgress={progress}
-      userId={session.user.id}
-    />
+    <>
+      <BackButton href={`/learn/${params.courseSlug}`} />
+      <LessonPlayer
+        lesson={lesson}
+        initialProgress={progress}
+        userId={session.user.id}
+      />
+    </>
   )
 }

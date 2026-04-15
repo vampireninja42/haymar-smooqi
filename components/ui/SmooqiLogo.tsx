@@ -21,7 +21,10 @@ export function SmooqiLogo({ size = 'default' }: { size?: 'default' | 'small' | 
           <path d="M9 17h6" stroke="white" strokeWidth="1.5" strokeLinecap="round"/>
         </svg>
       </div>
-      <span className={`${textSize} font-bold`} style={{ color: wordmarkColor }}>Smooqi</span>
+      <span className={`${textSize} font-bold tracking-tight`}>
+        <span style={{ color: '#111827' }}>Sm</span>
+        <span style={{ color: wordmarkColor }}>ooqi</span>
+      </span>
     </div>
   )
 }

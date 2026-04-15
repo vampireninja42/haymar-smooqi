@@ -3,6 +3,7 @@ import Link from 'next/link'
 import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { CourseCard } from '@/components/course/CourseCard'
+import { BackButton } from '@/components/ui/BackButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -23,6 +24,7 @@ export default async function SavedPage() {
 
   return (
     <div className="mx-auto max-w-3xl">
+      <BackButton href="/home" />
       <h1 className="text-xl font-bold text-gray-900">Saved Courses</h1>
       <p className="mt-1 text-sm text-gray-500">
         Courses you bookmarked for later.

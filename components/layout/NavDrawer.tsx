@@ -28,6 +28,12 @@ const navItems = [
   { label: 'Settings', href: '/settings', icon: '⚙️' },
 ]
 
+const secondaryNavItems = [
+  { label: 'Blog', href: '/blog', icon: '📝' },
+  { label: 'Support', href: '/support', icon: '🆘' },
+  { label: 'About', href: '/about-smooqi', icon: 'ℹ️' },
+]
+
 export function NavDrawer({ isOpen, onClose, userName, userImage, level }: NavDrawerProps) {
   const pathname = usePathname()
   const drawerBg = themeConfig.isVA ? '#FFFFFF' : '#FAFAF7'
@@ -85,6 +91,31 @@ export function NavDrawer({ isOpen, onClose, userName, userImage, level }: NavDr
             {/* Nav items */}
             <nav className="flex-1 space-y-1 px-3 py-4 overflow-y-auto">
               {navItems.map((item) => {
+                const isActive = pathname.startsWith(item.href)
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onClose}
+                    className={cn(
+                      'flex items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-medium transition-colors',
+                      isActive
+                        ? 'bg-[var(--color-primary)] text-white'
+                        : 'text-gray-600 hover:bg-gray-100 hover:text-gray-900'
+                    )}
+                  >
+                    <span className="text-lg">{item.icon}</span>
+                    {item.label}
+                  </Link>
+                )
+              })}
+
+              {/* Divider */}
+              <div className="mx-1 my-2 border-t border-gray-100" />
+              <p className="px-3 py-1 text-[10px] font-semibold uppercase tracking-widest text-gray-400">More</p>
+
+              {/* Secondary nav items */}
+              {secondaryNavItems.map((item) => {
                 const isActive = pathname.startsWith(item.href)
                 return (
                   <Link

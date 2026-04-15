@@ -4,6 +4,7 @@ import { auth } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { themeConfig } from '@/lib/theme'
 import { TopicActions } from './TopicActions'
+import { BackButton } from '@/components/ui/BackButton'
 
 export const dynamic = 'force-dynamic'
 
@@ -59,6 +60,7 @@ export default async function TopicPage({ params }: TopicPageProps) {
 
   return (
     <div className="mx-auto max-w-2xl">
+      <BackButton href="/explore" />
       {/* Topic header */}
       <div className="flex items-start gap-4">
         <span
