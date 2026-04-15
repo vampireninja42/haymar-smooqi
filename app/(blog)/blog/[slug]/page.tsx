@@ -1,10 +1,10 @@
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import { prisma } from '@/lib/db'
-import { Badge } from '@/components/ui/badge'
 import { Card, CardContent } from '@/components/ui/card'
 import { BlogContent } from './BlogContent'
 import { BackButton } from '@/components/ui/BackButton'
+import { TopicIllustration } from '@/components/blog/TopicIllustration'
 
 export const dynamic = 'force-dynamic'
 
@@ -25,15 +25,19 @@ export default async function BlogPostPage({
   })
 
   return (
-    <div className="mx-auto max-w-3xl px-4 py-16">
+    <div className="mx-auto max-w-3xl">
       <BackButton href="/blog" label="Back to Blog" />
 
-      <div className="mt-6 flex items-center gap-3">
-        <Badge variant="secondary">{post.topic}</Badge>
+      <TopicIllustration topic={post.topic} className="h-48 w-full mb-6 rounded-2xl" />
+
+      <div className="flex items-center gap-3">
+        <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-primary)' }}>
+          {post.topic}
+        </span>
         <span className="text-sm text-gray-400">{post.readingTime} min read</span>
       </div>
 
-      <h1 className="mt-4 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
+      <h1 className="mt-3 text-3xl font-bold tracking-tight text-gray-900 sm:text-4xl">
         {post.title}
       </h1>
 
@@ -55,13 +59,14 @@ export default async function BlogPostPage({
           <h2 className="text-xl font-bold text-gray-900">Related Posts</h2>
           <div className="mt-4 grid gap-4 sm:grid-cols-2">
             {related.map((r) => (
-              <Link key={r.id} href={`/blog/${r.slug}`}>
-                <Card className="h-full transition-shadow hover:shadow-lg">
+              <Link key={r.id} href={`/blog/${r.slug}`} className="glass-card rounded-2xl overflow-hidden hover:shadow-lg transition-shadow block">
+                <TopicIllustration topic={r.topic} className="h-32 w-full" />
+                <Card className="border-0 shadow-none">
                   <CardContent className="p-4">
-                    <Badge variant="secondary" className="mb-2 text-xs">
+                    <span className="text-xs font-semibold uppercase tracking-wide" style={{ color: 'var(--color-primary)' }}>
                       {r.topic}
-                    </Badge>
-                    <h3 className="font-semibold text-gray-900">{r.title}</h3>
+                    </span>
+                    <h3 className="font-semibold text-gray-900 mt-1">{r.title}</h3>
                     <p className="mt-1 line-clamp-2 text-sm text-gray-500">{r.excerpt}</p>
                   </CardContent>
                 </Card>

@@ -1,6 +1,8 @@
 import { auth } from '@/lib/auth'
 import { AppShell } from '@/components/layout/AppShell'
 import { prisma } from '@/lib/db'
+import { Header } from '@/components/layout/Header'
+import { Footer } from '@/components/layout/Footer'
 
 export default async function BlogLayout({ children }: { children: React.ReactNode }) {
   const session = await auth()
@@ -27,6 +29,11 @@ export default async function BlogLayout({ children }: { children: React.ReactNo
     )
   }
 
-  // Logged out: render children directly (parent public layout provides Header/Footer)
-  return <>{children}</>
+  return (
+    <div className="flex min-h-screen flex-col">
+      <Header />
+      <main className="flex-1">{children}</main>
+      <Footer />
+    </div>
+  )
 }
