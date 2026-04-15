@@ -4,12 +4,12 @@ import Link from 'next/link'
 import { themeConfig } from '@/lib/theme'
 
 const links = [
-  { label: 'Explore', href: '/explore', gradient: 'linear-gradient(135deg, #667eea, #764ba2)', icon: '\uD83D\uDD0D' },
-  { label: 'Leaderboard', href: '/leaderboard', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)', icon: '\uD83C\uDFC6' },
-  { label: 'Word Games', href: '/word-games', gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)', icon: '\uD83C\uDFAE' },
-  { label: 'Achievements', href: '/achievements', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)', icon: '\uD83C\uDFC5' },
-  { label: 'Reports', href: '/reports', gradient: 'linear-gradient(135deg, #fa709a, #fee140)', icon: '\uD83D\uDCCA' },
-  { label: 'Invite Friends', href: '/invite', gradient: 'linear-gradient(135deg, #a18cd1, #fbc2eb)', icon: '\uD83C\uDF81' },
+  { label: 'Explore', href: '/explore', gradient: 'linear-gradient(135deg, #667eea, #764ba2)', icon: '🔍' },
+  { label: 'Leaderboard', href: '/leaderboard', gradient: 'linear-gradient(135deg, #f093fb, #f5576c)', icon: '🏆' },
+  { label: 'Word Games', href: '/word-games', gradient: 'linear-gradient(135deg, #4facfe, #00f2fe)', icon: '🎮' },
+  { label: 'Achievements', href: '/achievements', gradient: 'linear-gradient(135deg, #43e97b, #38f9d7)', icon: '🏅' },
+  { label: 'Reports', href: '/reports', gradient: 'linear-gradient(135deg, #fa709a, #fee140)', icon: '📊' },
+  { label: 'Invite Friends', href: '/invite', gradient: 'linear-gradient(135deg, #a18cd1, #fbc2eb)', icon: '🎁' },
 ]
 
 export function QuickLinksGrid() {

@@ -77,7 +77,7 @@ export function DailyChallengeWidget({
       {/* Header */}
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold uppercase tracking-widest text-white">
-          \u26A1 Daily Challenge
+          ⚡ Daily Challenge
         </span>
         <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-purple-600">
           +10 XP

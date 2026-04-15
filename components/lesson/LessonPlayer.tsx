@@ -383,7 +383,7 @@ export function LessonPlayer({ lesson, userId }: LessonPlayerProps) {
                     borderRadius: 'var(--button-radius)',
                   }}
                 >
-                  {state.currentSlide === totalSlides - 1 ? 'Complete Lesson' : 'Next \u2192'}
+                  {state.currentSlide === totalSlides - 1 ? 'Complete Lesson' : 'Next →'}
                 </Button>
               </div>
             )}

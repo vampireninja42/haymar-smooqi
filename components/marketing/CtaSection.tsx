@@ -45,7 +45,7 @@ const plans = [
     cta: "Try Premium Free for 7 Days",
     href: "/signup",
     highlighted: true,
-    badge: "Most Popular \u2014 Save 50%",
+    badge: "Most Popular — Save 50%",
     features: [
       "Full course access",
       "Audio mode",

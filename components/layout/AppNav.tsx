@@ -13,14 +13,14 @@ interface AppNavProps {
 }
 
 const navItems = [
-  { label: 'Home', href: '/home', icon: '\uD83C\uDFE0' },
-  { label: 'Explore', href: '/explore', icon: '\uD83D\uDD0D' },
-  { label: 'Word Games', href: '/word-games', icon: '\uD83C\uDFAE' },
-  { label: 'Leaderboard', href: '/leaderboard', icon: '\uD83C\uDFC6' },
-  { label: 'Reports', href: '/reports', icon: '\uD83D\uDCCA' },
-  { label: 'Achievements', href: '/achievements', icon: '\uD83C\uDFC5' },
-  { label: 'Profile', href: '/profile', icon: '\uD83D\uDC64' },
-  { label: 'Settings', href: '/settings', icon: '\u2699\uFE0F' },
+  { label: 'Home', href: '/home', icon: '🏠' },
+  { label: 'Explore', href: '/explore', icon: '🔍' },
+  { label: 'Word Games', href: '/word-games', icon: '🎮' },
+  { label: 'Leaderboard', href: '/leaderboard', icon: '🏆' },
+  { label: 'Reports', href: '/reports', icon: '📊' },
+  { label: 'Achievements', href: '/achievements', icon: '🏅' },
+  { label: 'Profile', href: '/profile', icon: '👤' },
+  { label: 'Settings', href: '/settings', icon: '⚙️' },
 ]
 
 export function AppNav({ userName, userImage, level, streak }: AppNavProps) {
@@ -77,7 +77,7 @@ export function AppNav({ userName, userImage, level, streak }: AppNavProps) {
             </span>
             {streak > 0 && (
               <span className="text-[10px] text-gray-400">
-                \uD83D\uDD25 {streak} day streak
+                🔥 {streak} day streak
               </span>
             )}
           </div>

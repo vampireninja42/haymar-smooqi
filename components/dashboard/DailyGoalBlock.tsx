@@ -83,11 +83,11 @@ export function DailyGoalBlock({
         {/* Streak badge */}
         {streak > 0 ? (
           <span className="inline-flex items-center gap-1 rounded-full bg-amber-500 px-2.5 py-1 text-xs font-semibold text-white">
-            \uD83D\uDD25 {streak} days
+            🔥 {streak} days
           </span>
         ) : (
           <span className="inline-flex items-center gap-1 rounded-full bg-gray-100 px-2.5 py-1 text-xs font-medium text-gray-400">
-            \uD83D\uDD25 0 days
+            🔥 0 days
           </span>
         )}
       </div>
@@ -139,7 +139,7 @@ export function DailyGoalBlock({
       {/* Level row */}
       <div className="mt-4 flex items-center justify-between">
         <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2.5 py-1 text-xs font-semibold text-amber-700">
-          \u26A1 Level {level}
+          ⚡ Level {level}
         </span>
         <span className="text-xs font-medium text-gray-500">{xp} XP</span>
       </div>

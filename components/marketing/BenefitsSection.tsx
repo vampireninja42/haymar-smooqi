@@ -5,19 +5,19 @@ import { Card, CardContent } from "@/components/ui/card";
 
 const benefits = [
   {
-    icon: "\uD83C\uDF0D",
+    icon: "🌍",
     title: "Learn Anything",
     description:
       "Choose from 195+ topics spanning science, history, psychology, cooking, music, and more. There is always something new to discover.",
   },
   {
-    icon: "\uD83D\uDD25",
+    icon: "🔥",
     title: "Build the Habit",
     description:
       "Daily streaks, XP, and achievements keep you motivated. Most users build a lasting learning habit within two weeks.",
   },
   {
-    icon: "\uD83E\uDDE0",
+    icon: "🧠",
     title: "Actually Remember It",
     description:
       "Spaced repetition, quizzes, and word games are built into every lesson so you retain what you learn for good.",

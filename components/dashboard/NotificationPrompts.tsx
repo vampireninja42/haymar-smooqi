@@ -94,7 +94,7 @@ export function NotificationPrompts({
                     'linear-gradient(135deg, #f59e0b, #fbbf24)',
                 }}
               >
-                \uD83D\uDD14
+                🔔
               </span>
               <div className="flex-1 pr-6">
                 <p className="text-sm font-bold text-gray-900">
@@ -159,7 +159,7 @@ export function NotificationPrompts({
                     'linear-gradient(135deg, #14b8a6, #8b5cf6)',
                 }}
               >
-                \uD83D\uDCAC
+                💬
               </span>
               <div className="flex-1 pr-6">
                 <p className="text-sm font-bold text-gray-900">

@@ -70,7 +70,7 @@ function formatSlideContent(content: string) {
     const trimmed = line.trim()
 
     // Bullet list items
-    if (trimmed.startsWith('- ') || trimmed.startsWith('\u2022 ')) {
+    if (trimmed.startsWith('- ') || trimmed.startsWith('• ')) {
       flushOrdered()
       const text = trimmed.startsWith('- ') ? trimmed.slice(2) : trimmed.slice(2)
       bulletBuffer.push(text)
@@ -129,7 +129,7 @@ function formatSlideContent(content: string) {
 }
 
 export function SlideView({ slide, mode, currentWordIndex, isFirst, isLast, topicIcon }: SlideViewProps) {
-  const icon = topicIcon || '\uD83D\uDCA1'
+  const icon = topicIcon || '💡'
 
   return (
     <Card

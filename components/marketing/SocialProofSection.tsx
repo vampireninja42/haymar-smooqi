@@ -58,7 +58,7 @@ export function SocialProofSection({ learnerCount }: SocialProofSectionProps) {
                   </div>
                   <div className="flex items-center gap-4 text-sm text-muted-foreground">
                     <span>
-                      <span className="mr-1">{"\uD83D\uDD25"}</span>
+                      <span className="mr-1">{"🔥"}</span>
                       {entry.streak} days
                     </span>
                     <span className="font-medium text-foreground">

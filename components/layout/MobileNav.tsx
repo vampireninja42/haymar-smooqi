@@ -14,11 +14,11 @@ interface MobileNavProps {
 }
 
 const bottomTabs = [
-  { label: 'Home', href: '/home', icon: '\uD83C\uDFE0' },
-  { label: 'Explore', href: '/explore', icon: '\uD83D\uDD0D' },
-  { label: 'Games', href: '/word-games', icon: '\uD83C\uDFAE' },
-  { label: 'Ranks', href: '/leaderboard', icon: '\uD83C\uDFC6' },
-  { label: 'Profile', href: '/profile', icon: '\uD83D\uDC64' },
+  { label: 'Home', href: '/home', icon: '🏠' },
+  { label: 'Explore', href: '/explore', icon: '🔍' },
+  { label: 'Games', href: '/word-games', icon: '🎮' },
+  { label: 'Ranks', href: '/leaderboard', icon: '🏆' },
+  { label: 'Profile', href: '/profile', icon: '👤' },
 ]
 
 export function MobileNav({ level, streak, xp }: MobileNavProps) {
@@ -34,7 +34,7 @@ export function MobileNav({ level, streak, xp }: MobileNavProps) {
         <div className="flex items-center gap-2">
           {streak > 0 && (
             <Badge variant="secondary" className="text-xs font-medium">
-              \uD83D\uDD25 {streak}
+              🔥 {streak}
             </Badge>
           )}
           <Badge variant="secondary" className="text-xs font-medium">
