@@ -37,7 +37,7 @@ interface LearningPathProps {
 export function LearningPath({ topicSelections }: LearningPathProps) {
   if (topicSelections.length === 0) {
     return (
-      <div className="rounded-[var(--card-radius)] bg-white p-6 text-center shadow-sm">
+      <div className={`rounded-[var(--card-radius)] p-6 text-center shadow-sm ${themeConfig.isVA ? 'glass-card' : 'bg-white'}`}>
         <p className="text-2xl">&#128218;</p>
         <p className="mt-2 text-sm font-medium text-gray-900">No topics selected yet</p>
         <p className="mt-1 text-xs text-gray-500">Choose topics to build your learning path.</p>
@@ -61,7 +61,7 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
         return (
           <div
             key={ts.topicId}
-            className="overflow-hidden rounded-[var(--card-radius)] bg-white shadow-sm"
+            className={`overflow-hidden rounded-[var(--card-radius)] shadow-sm ${themeConfig.isVA ? 'glass-card' : 'bg-white'}`}
             style={{ borderLeft: `4px solid ${colors.text}` }}
           >
             {/* Colored header band */}

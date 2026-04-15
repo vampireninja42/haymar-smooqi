@@ -3,52 +3,59 @@
 import { useState } from 'react'
 
 interface DailyChallengeWidgetProps {
-  challengeId: string
-  question: string
-  optionA: string
-  optionB: string
-  optionC: string
-  optionD: string
-  correctAnswer: string
-  explanation: string | null
-  alreadyAttempted: boolean
-  previousAnswer?: string | null
-  wasCorrect?: boolean | null
+  challenge: {
+    id: string
+    question: {
+      question: string
+      optionA: string
+      optionB: string
+      optionC: string
+      optionD: string
+      correctAnswer: string
+      explanation?: string | null
+    }
+  } | null
+  existingAttempt: {
+    selectedAnswer: string
+    isCorrect: boolean
+  } | null
 }
 
 export function DailyChallengeWidget({
-  challengeId,
-  question,
-  optionA,
-  optionB,
-  optionC,
-  optionD,
-  correctAnswer,
-  explanation,
-  alreadyAttempted,
-  previousAnswer,
-  wasCorrect,
+  challenge,
+  existingAttempt,
 }: DailyChallengeWidgetProps) {
-  const [selected, setSelected] = useState<string | null>(previousAnswer ?? null)
-  const [submitted, setSubmitted] = useState(alreadyAttempted)
-  const [isCorrect, setIsCorrect] = useState<boolean | null>(wasCorrect ?? null)
+  const [selected, setSelected] = useState<string | null>(
+    existingAttempt?.selectedAnswer ?? null
+  )
+  const [submitted, setSubmitted] = useState(!!existingAttempt)
+  const [isCorrect, setIsCorrect] = useState<boolean | null>(
+    existingAttempt?.isCorrect ?? null
+  )
   const [loading, setLoading] = useState(false)
 
+  if (!challenge) return null
+
+  const { question } = challenge
   const options = [
-    { key: 'A', text: optionA },
-    { key: 'B', text: optionB },
-    { key: 'C', text: optionC },
-    { key: 'D', text: optionD },
+    { key: 'A', text: question.optionA },
+    { key: 'B', text: question.optionB },
+    { key: 'C', text: question.optionC },
+    { key: 'D', text: question.optionD },
   ]
 
-  async function handleSubmit() {
-    if (!selected || submitted) return
+  async function handleSelect(key: string) {
+    if (submitted) return
+    setSelected(key)
     setLoading(true)
     try {
       const res = await fetch('/api/daily-challenge', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ challengeId, selectedAnswer: selected }),
+        body: JSON.stringify({
+          challengeId: challenge!.id,
+          selectedAnswer: key,
+        }),
       })
       const data = await res.json()
       setIsCorrect(data.isCorrect)
@@ -61,61 +68,91 @@ export function DailyChallengeWidget({
   }
 
   return (
-    <div className="rounded-[var(--card-radius)] bg-white p-4 shadow-sm">
-      <div className="flex items-center gap-2">
-        <span className="text-xl">&#127919;</span>
-        <h3 className="text-sm font-semibold text-gray-900">Daily Challenge</h3>
+    <div
+      className="rounded-[var(--card-radius)] p-4 shadow-sm overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+      }}
+    >
+      {/* Header */}
+      <div className="flex items-center justify-between">
+        <span className="text-xs font-semibold uppercase tracking-widest text-white">
+          \u26A1 Daily Challenge
+        </span>
+        <span className="rounded-full bg-white px-2.5 py-0.5 text-xs font-semibold text-purple-600">
+          +10 XP
+        </span>
       </div>
 
-      <p className="mt-2 text-sm text-gray-700">{question}</p>
+      {/* Question */}
+      <p className="mt-3 text-base font-semibold text-white">
+        {question.question}
+      </p>
 
+      {/* Options */}
       <div className="mt-3 space-y-2">
         {options.map((opt) => {
-          let bg = 'bg-gray-50 hover:bg-gray-100'
-          let border = 'border-gray-200'
+          let bg = 'rgba(255,255,255,0.15)'
+          let textColor = 'text-white'
+          let borderColor = 'rgba(255,255,255,0.3)'
+
           if (submitted) {
-            if (opt.key === correctAnswer) {
-              bg = 'bg-green-50'
-              border = 'border-green-400'
+            if (opt.key === question.correctAnswer) {
+              bg = 'rgba(134,239,172,0.35)'
+              borderColor = 'rgba(134,239,172,0.6)'
             } else if (opt.key === selected && !isCorrect) {
-              bg = 'bg-red-50'
-              border = 'border-red-400'
+              bg = 'rgba(252,165,165,0.35)'
+              borderColor = 'rgba(252,165,165,0.6)'
             }
           } else if (opt.key === selected) {
-            bg = 'bg-[var(--color-primary-light)]'
-            border = 'border-[var(--color-primary)]'
+            bg = 'rgba(255,255,255,0.9)'
+            textColor = 'text-purple-700'
+            borderColor = 'rgba(255,255,255,0.9)'
           }
+
           return (
             <button
               key={opt.key}
-              disabled={submitted}
-              onClick={() => setSelected(opt.key)}
-              className={`w-full rounded-lg border ${border} ${bg} px-3 py-2 text-left text-sm transition-colors`}
+              disabled={submitted || loading}
+              onClick={() => handleSelect(opt.key)}
+              className={`w-full rounded-lg border px-3 py-2 text-left text-sm transition-colors ${textColor} disabled:cursor-default`}
+              style={{
+                backgroundColor: bg,
+                borderColor: borderColor,
+              }}
+              onMouseEnter={(e) => {
+                if (!submitted && opt.key !== selected) {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(255,255,255,0.25)'
+                }
+              }}
+              onMouseLeave={(e) => {
+                if (!submitted && opt.key !== selected) {
+                  e.currentTarget.style.backgroundColor =
+                    'rgba(255,255,255,0.15)'
+                }
+              }}
             >
-              <span className="font-medium text-gray-600">{opt.key}.</span> {opt.text}
+              <span className="font-medium">{opt.key}.</span> {opt.text}
             </button>
           )
         })}
       </div>
 
-      {submitted && explanation && (
-        <p className="mt-3 rounded-lg bg-blue-50 p-2 text-xs text-blue-700">{explanation}</p>
-      )}
-
-      {!submitted && (
-        <button
-          onClick={handleSubmit}
-          disabled={!selected || loading}
-          className="mt-3 w-full rounded-[var(--button-radius)] bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white disabled:opacity-50"
-        >
-          {loading ? 'Submitting...' : 'Submit Answer'}
-        </button>
-      )}
-
+      {/* Result / Explanation */}
       {submitted && (
-        <p className={`mt-2 text-center text-sm font-medium ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-          {isCorrect ? 'Correct! +20 XP' : 'Not quite. Try again tomorrow!'}
-        </p>
+        <div className="mt-3">
+          <p className="text-center text-sm font-medium text-white">
+            {isCorrect
+              ? 'Correct! +10 XP'
+              : 'Not quite. Try again tomorrow!'}
+          </p>
+          {question.explanation && (
+            <p className="mt-2 text-xs text-white/80">
+              {question.explanation}
+            </p>
+          )}
+        </div>
       )}
     </div>
   )

@@ -42,7 +42,8 @@ export function CourseCard({ course, isSaved, progress }: CourseCardProps) {
       <Card
         className={cn(
           'relative overflow-hidden transition-shadow hover:shadow-md border-l-4',
-          'rounded-[var(--card-radius)]'
+          'rounded-[var(--card-radius)]',
+          themeConfig.isVA && 'glass-card'
         )}
         style={{ borderLeftColor: topicColor.text }}
       >

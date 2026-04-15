@@ -93,7 +93,7 @@ export function getThemeCSSVars(): string {
 
 export function getBodyStyle(): string {
   if (VARIANT === 'vA') {
-    return 'background: linear-gradient(135deg, #EEF2FF 0%, #F5F0FF 30%, #F0FDFA 70%, #FFF1F2 100%); min-height: 100vh;'
+    return `background: radial-gradient(ellipse at 20% 20%, rgba(167, 139, 250, 0.35) 0%, transparent 50%), radial-gradient(ellipse at 80% 10%, rgba(196, 181, 253, 0.25) 0%, transparent 40%), radial-gradient(ellipse at 60% 80%, rgba(110, 231, 183, 0.2) 0%, transparent 45%), radial-gradient(ellipse at 10% 70%, rgba(251, 207, 232, 0.25) 0%, transparent 40%), radial-gradient(ellipse at 90% 60%, rgba(147, 197, 253, 0.2) 0%, transparent 40%), #F1F0F7; min-height: 100vh;`
   }
   return 'background-color: #FAFAF7; min-height: 100vh;'
 }

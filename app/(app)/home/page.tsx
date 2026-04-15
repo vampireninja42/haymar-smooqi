@@ -121,6 +121,7 @@ export default async function HomePage() {
   })
 
   // Build weekly data array (last 7 days)
+  const todayDayIdx = today.getDay() === 0 ? 6 : today.getDay() - 1
   const weeklyData = Array.from({ length: 7 }, (_, i) => {
     const d = new Date(sevenDaysAgo)
     d.setDate(sevenDaysAgo.getDate() + i)
@@ -131,19 +132,13 @@ export default async function HomePage() {
     const dayXp = xpLogs
       .filter((l) => l.createdAt >= dayStart && l.createdAt <= dayEnd)
       .reduce((sum, l) => sum + l.amount, 0)
+    const dayLabel = DAY_LABELS[d.getDay() === 0 ? 6 : d.getDay() - 1]
     return {
-      label: DAY_LABELS[d.getDay() === 0 ? 6 : d.getDay() - 1],
+      day: dayLabel,
       minutes: Math.round(dayXp / 2),
+      isToday: (d.getDay() === 0 ? 6 : d.getDay() - 1) === todayDayIdx && i === 6,
     }
   })
-
-  // Count slides for continue lesson
-  let totalSlides = 0
-  if (continueLesson?.lesson) {
-    totalSlides = await prisma.slide.count({
-      where: { lessonId: continueLesson.lesson.id },
-    })
-  }
 
   const savedIds = savedCourseIds.map((s) => s.courseId)
 
@@ -176,11 +171,9 @@ export default async function HomePage() {
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Continue Learning</h2>
           <ContinueLearningCard
             courseSlug={continueLesson.course.slug}
-            courseTitle={continueLesson.course.title}
+            courseName={continueLesson.course.title}
             lessonSlug={continueLesson.lesson.slug}
             lessonTitle={continueLesson.lesson.title}
-            slidesCompleted={continueLesson.slidesCompleted}
-            totalSlides={totalSlides}
           />
         </div>
       )}
@@ -189,10 +182,11 @@ export default async function HomePage() {
       <div>
         <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Activity</h2>
         <DailyGoalBlock
-          currentStreak={user.currentStreak}
-          bestStreak={user.bestStreak}
-          totalLessonsDone={user.totalLessonsDone}
-          totalMinutes={user.totalMinutes}
+          minutesStudied={user.totalMinutes}
+          dailyGoal={15}
+          streak={user.currentStreak}
+          level={user.level}
+          xp={user.xp}
           weeklyData={weeklyData}
         />
       </div>
@@ -202,17 +196,14 @@ export default async function HomePage() {
         <div>
           <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Daily Challenge</h2>
           <DailyChallengeWidget
-            challengeId={dailyChallenge.id}
-            question={dailyChallenge.question.question}
-            optionA={dailyChallenge.question.optionA}
-            optionB={dailyChallenge.question.optionB}
-            optionC={dailyChallenge.question.optionC}
-            optionD={dailyChallenge.question.optionD}
-            correctAnswer={dailyChallenge.question.correctAnswer}
-            explanation={dailyChallenge.question.explanation}
-            alreadyAttempted={!!dailyChallengeAttempt}
-            previousAnswer={dailyChallengeAttempt?.selectedAnswer}
-            wasCorrect={dailyChallengeAttempt?.isCorrect}
+            challenge={{
+              id: dailyChallenge.id,
+              question: dailyChallenge.question,
+            }}
+            existingAttempt={dailyChallengeAttempt ? {
+              selectedAnswer: dailyChallengeAttempt.selectedAnswer,
+              isCorrect: dailyChallengeAttempt.isCorrect,
+            } : null}
           />
         </div>
       )}

@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
+import { themeConfig } from '@/lib/theme'
 
 interface NotificationPromptsProps {
   notificationsEnabled: boolean
@@ -55,6 +56,8 @@ export function NotificationPrompts({
     }
   }
 
+  const cardClass = themeConfig.isVA ? 'glass-card' : 'bg-white shadow-sm'
+
   return (
     <AnimatePresence>
       {showNotification && (
@@ -65,25 +68,11 @@ export function NotificationPrompts({
           exit={{ opacity: 0, height: 0 }}
           className="overflow-hidden"
         >
-          <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-            <button
-              onClick={handleEnableNotifications}
-              className="flex flex-1 items-start gap-3 cursor-pointer text-left"
-            >
-              <span className="text-lg">&#128276;</span>
-              <div>
-                <p className="text-sm font-semibold text-amber-900">
-                  Enable notifications
-                </p>
-                <p className="text-xs text-amber-700">
-                  Get daily reminders to keep your streak alive and never miss a
-                  challenge.
-                </p>
-              </div>
-            </button>
+          <div className={`relative rounded-xl p-4 ${cardClass}`}>
+            {/* Dismiss X */}
             <button
               onClick={dismissNotificationPrompt}
-              className="flex-shrink-0 text-amber-400 hover:text-amber-600"
+              className="absolute top-3 right-3 text-gray-300 hover:text-gray-500"
               aria-label="Dismiss"
             >
               <svg
@@ -95,6 +84,43 @@ export function NotificationPrompts({
                 <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
               </svg>
             </button>
+
+            <div className="flex items-start gap-3">
+              {/* Icon badge */}
+              <span
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-white text-lg"
+                style={{
+                  background:
+                    'linear-gradient(135deg, #f59e0b, #fbbf24)',
+                }}
+              >
+                \uD83D\uDD14
+              </span>
+              <div className="flex-1 pr-6">
+                <p className="text-sm font-bold text-gray-900">
+                  Stay on track!
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  Get daily reminders to keep your streak alive and never miss a
+                  challenge.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 flex items-center gap-3">
+              <button
+                onClick={handleEnableNotifications}
+                className="rounded-[var(--button-radius)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Enable Reminders
+              </button>
+              <button
+                onClick={dismissNotificationPrompt}
+                className="text-sm text-gray-400 hover:text-gray-600"
+              >
+                Not now
+              </button>
+            </div>
           </div>
         </motion.div>
       )}
@@ -107,25 +133,11 @@ export function NotificationPrompts({
           exit={{ opacity: 0, height: 0 }}
           className="overflow-hidden"
         >
-          <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-            <Link
-              href="/support"
-              className="flex flex-1 items-start gap-3 cursor-pointer"
-            >
-              <span className="text-lg">&#11088;</span>
-              <div>
-                <p className="text-sm font-semibold text-amber-900">
-                  Enjoying Smooqi?
-                </p>
-                <p className="text-xs text-amber-700">
-                  You&apos;ve completed {totalLessonsDone} lessons! If you&apos;re
-                  enjoying the app, we&apos;d love your feedback.
-                </p>
-              </div>
-            </Link>
+          <div className={`relative rounded-xl p-4 ${cardClass}`}>
+            {/* Dismiss X */}
             <button
               onClick={dismissRatingPrompt}
-              className="flex-shrink-0 text-amber-400 hover:text-amber-600"
+              className="absolute top-3 right-3 text-gray-300 hover:text-gray-500"
               aria-label="Dismiss"
             >
               <svg
@@ -137,6 +149,37 @@ export function NotificationPrompts({
                 <path d="M6.28 5.22a.75.75 0 00-1.06 1.06L8.94 10l-3.72 3.72a.75.75 0 101.06 1.06L10 11.06l3.72 3.72a.75.75 0 101.06-1.06L11.06 10l3.72-3.72a.75.75 0 00-1.06-1.06L10 8.94 6.28 5.22z" />
               </svg>
             </button>
+
+            <div className="flex items-start gap-3">
+              {/* Icon badge */}
+              <span
+                className="flex h-11 w-11 flex-shrink-0 items-center justify-center rounded-xl text-white text-lg"
+                style={{
+                  background:
+                    'linear-gradient(135deg, #14b8a6, #8b5cf6)',
+                }}
+              >
+                \uD83D\uDCAC
+              </span>
+              <div className="flex-1 pr-6">
+                <p className="text-sm font-bold text-gray-900">
+                  How are you liking Smooqi?
+                </p>
+                <p className="text-xs text-gray-500 mt-0.5">
+                  You&apos;ve completed {totalLessonsDone} lessons! We&apos;d
+                  love your feedback.
+                </p>
+              </div>
+            </div>
+
+            <div className="mt-3 flex justify-end">
+              <Link
+                href="/support"
+                className="rounded-[var(--button-radius)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white"
+              >
+                Rate Us
+              </Link>
+            </div>
           </div>
         </motion.div>
       )}
