@@ -1388,6 +1388,43 @@ async function upsertQuizQuestions(
 }
 
 // ---------------------------------------------------------------------------
+// Daily Challenges
+// ---------------------------------------------------------------------------
+async function seedDailyChallenges() {
+  console.log('Seeding daily challenges...');
+
+  // Fetch first 30 quiz questions to use as daily challenges
+  const questions = await prisma.quizQuestion.findMany({
+    take: 30,
+    orderBy: { sortOrder: 'asc' },
+    select: { id: true },
+  });
+
+  if (questions.length === 0) {
+    console.log('  No quiz questions found, skipping daily challenges.');
+    return;
+  }
+
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+
+  for (let i = 0; i < 30; i++) {
+    const date = new Date(today);
+    date.setDate(today.getDate() + i);
+
+    const question = questions[i % questions.length];
+
+    await prisma.dailyChallenge.upsert({
+      where: { date },
+      update: { questionId: question.id },
+      create: { date, questionId: question.id },
+    });
+  }
+
+  console.log(`  Created/updated 30 daily challenges (today + 29 days).`);
+}
+
+// ---------------------------------------------------------------------------
 // Main
 // ---------------------------------------------------------------------------
 async function main() {
@@ -1398,6 +1435,7 @@ async function main() {
   await seedAchievements();
   await seedWordGames();
   await seedTalkWithCharisma();
+  await seedDailyChallenges();
 
   console.log('\nSeed completed successfully!');
 }
