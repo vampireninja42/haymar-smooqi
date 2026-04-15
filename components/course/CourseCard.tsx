@@ -41,11 +41,12 @@ export function CourseCard({ course, isSaved, progress }: CourseCardProps) {
     <Link href={`/learn/${course.slug}`} className="block">
       <Card
         className={cn(
-          'relative overflow-hidden transition-shadow hover:shadow-md',
+          'relative overflow-hidden transition-shadow hover:shadow-md border-l-4',
           'rounded-[var(--card-radius)]'
         )}
+        style={{ borderLeftColor: topicColor.text }}
       >
-        <CardContent className="p-4">
+        <CardContent className="p-5">
           <div className="mb-3 flex items-start justify-between">
             <div className="flex items-center gap-2">
               <span
@@ -60,10 +61,10 @@ export function CourseCard({ course, isSaved, progress }: CourseCardProps) {
             <BookmarkButton courseId={course.id} initialSaved={isSaved} />
           </div>
 
-          <h3 className="mb-1 text-base font-semibold leading-tight text-gray-900">
+          <h3 className="mb-2 text-base font-bold leading-tight text-gray-900">
             {course.title}
           </h3>
-          <p className="mb-3 line-clamp-2 text-sm text-gray-500">
+          <p className="mb-4 line-clamp-1 text-sm text-gray-500">
             {course.description}
           </p>
 

@@ -52,47 +52,47 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
   }
 
   return (
-    <div>
-      <h3 className="mb-3 text-sm font-semibold text-gray-900">Your Learning Path</h3>
-      <div className="space-y-4">
-        {topicSelections.map((ts) => {
-          const colors = themeConfig.topicColors[ts.topic.slug] ?? { bg: '#F3F4F6', text: '#374151' }
-          return (
-            <div key={ts.topicId} className="rounded-[var(--card-radius)] bg-white p-4 shadow-sm">
-              <Link href={`/topics/${ts.topic.slug}`} className="flex items-center gap-2">
-                <span
-                  className="flex h-8 w-8 items-center justify-center rounded-full text-base"
-                  style={{ backgroundColor: colors.bg }}
-                >
-                  {ts.topic.icon}
-                </span>
-                <span className="text-sm font-semibold text-gray-900">{ts.topic.name}</span>
-                <span className="ml-auto text-xs text-gray-400">{ts.topic.courses.length} courses</span>
-              </Link>
+    <div className="space-y-4">
+      {topicSelections.map((ts) => {
+        const colors = themeConfig.topicColors[ts.topic.slug] ?? { bg: '#F3F4F6', text: '#374151' }
+        const visibleCourses = ts.topic.courses.slice(0, 3)
+        const remainingCount = ts.topic.courses.length - 3
 
-              <div className="mt-2 space-y-1 pl-10">
-                {ts.topic.courses.slice(0, 3).map((course) => (
-                  <Link
-                    key={course.id}
-                    href={`/learn/${course.slug}`}
-                    className="block text-xs text-gray-600 hover:text-[var(--color-primary)]"
-                  >
-                    {course.title}
-                  </Link>
-                ))}
-                {ts.topic.courses.length > 3 && (
-                  <Link
-                    href={`/topics/${ts.topic.slug}`}
-                    className="block text-xs font-medium text-[var(--color-primary)]"
-                  >
-                    +{ts.topic.courses.length - 3} more
-                  </Link>
-                )}
-              </div>
+        return (
+          <div key={ts.topicId} className="rounded-[var(--card-radius)] bg-white p-4 shadow-sm">
+            <Link href={`/topics/${ts.topic.slug}`} className="flex items-center gap-2">
+              <span
+                className="flex h-8 w-8 items-center justify-center rounded-full text-base"
+                style={{ backgroundColor: colors.bg }}
+              >
+                {ts.topic.icon}
+              </span>
+              <span className="text-sm font-semibold text-gray-900">{ts.topic.name}</span>
+              <span className="ml-auto text-xs text-gray-400">{ts.topic.courses.length} courses</span>
+            </Link>
+
+            <div className="mt-2 space-y-1 pl-10">
+              {visibleCourses.map((course) => (
+                <Link
+                  key={course.id}
+                  href={`/learn/${course.slug}`}
+                  className="block text-xs text-gray-600 hover:text-[var(--color-primary)]"
+                >
+                  {course.title}
+                </Link>
+              ))}
+              {remainingCount > 0 && (
+                <Link
+                  href={`/topics/${ts.topic.slug}`}
+                  className="block text-xs font-medium text-[var(--color-primary)]"
+                >
+                  See all {ts.topic.courses.length} courses &rarr;
+                </Link>
+              )}
             </div>
-          )
-        })}
-      </div>
+          </div>
+        )
+      })}
     </div>
   )
 }

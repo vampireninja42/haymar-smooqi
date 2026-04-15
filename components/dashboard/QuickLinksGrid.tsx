@@ -11,20 +11,20 @@ const links = [
 
 export function QuickLinksGrid() {
   return (
-    <div className="grid grid-cols-4 gap-3">
+    <div className="grid grid-cols-4 gap-2">
       {links.map((l) => (
         <Link
           key={l.href}
           href={l.href}
-          className="flex flex-col items-center gap-1.5 rounded-[var(--card-radius)] bg-white p-3 shadow-sm transition-shadow hover:shadow-md"
+          className="flex flex-col items-center gap-1 rounded-[var(--card-radius)] bg-white p-2 shadow-sm transition-shadow hover:shadow-md"
         >
           <span
-            className="flex h-10 w-10 items-center justify-center rounded-full text-xl"
+            className="flex h-8 w-8 items-center justify-center rounded-full text-base"
             style={{ backgroundColor: l.color }}
           >
             {l.icon}
           </span>
-          <span className="text-xs font-medium text-gray-700">{l.label}</span>
+          <span className="text-[11px] font-medium text-gray-700">{l.label}</span>
         </Link>
       ))}
     </div>

@@ -16,11 +16,14 @@ type AudioPlayerProps = {
     imageAlt?: string | null
   }
   onSlideComplete: () => void
+  isFirst?: boolean
+  isLast?: boolean
+  topicIcon?: string
 }
 
 const SPEED_OPTIONS = [0.75, 1, 1.25, 1.5] as const
 
-export function AudioPlayer({ text, slide, onSlideComplete }: AudioPlayerProps) {
+export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, topicIcon }: AudioPlayerProps) {
   const autoAdvanceRef = useRef(false)
 
   const handleComplete = useCallback(() => {
@@ -55,7 +58,7 @@ export function AudioPlayer({ text, slide, onSlideComplete }: AudioPlayerProps) 
   if (!isSupported) {
     return (
       <div className="text-center py-8">
-        <SlideView slide={slide} mode="read" currentWordIndex={-1} />
+        <SlideView slide={slide} mode="read" currentWordIndex={-1} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} />
         <p className="mt-4 text-sm text-gray-500">
           Audio playback is not supported in your browser. You can read the content above.
         </p>
@@ -75,7 +78,7 @@ export function AudioPlayer({ text, slide, onSlideComplete }: AudioPlayerProps) 
 
   return (
     <div className="space-y-6">
-      <SlideView slide={slide} mode="audio" currentWordIndex={currentWordIndex} />
+      <SlideView slide={slide} mode="audio" currentWordIndex={currentWordIndex} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} />
 
       <div className="flex flex-col items-center gap-4">
         {/* Play/Pause button */}

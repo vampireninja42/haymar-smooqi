@@ -153,7 +153,7 @@ export default async function HomePage() {
   const xpNeeded = xpForNextLevel - xpForCurrentLevel
 
   return (
-    <div className="mx-auto max-w-2xl space-y-5">
+    <div className="mx-auto max-w-2xl space-y-6">
       {/* Greeting */}
       <div>
         <h1 className="text-xl font-bold text-gray-900">
@@ -172,86 +172,104 @@ export default async function HomePage() {
 
       {/* Continue learning */}
       {continueLesson?.lesson && continueLesson.course && (
-        <ContinueLearningCard
-          courseSlug={continueLesson.course.slug}
-          courseTitle={continueLesson.course.title}
-          lessonSlug={continueLesson.lesson.slug}
-          lessonTitle={continueLesson.lesson.title}
-          slidesCompleted={continueLesson.slidesCompleted}
-          totalSlides={totalSlides}
-        />
+        <div>
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Continue Learning</h2>
+          <ContinueLearningCard
+            courseSlug={continueLesson.course.slug}
+            courseTitle={continueLesson.course.title}
+            lessonSlug={continueLesson.lesson.slug}
+            lessonTitle={continueLesson.lesson.title}
+            slidesCompleted={continueLesson.slidesCompleted}
+            totalSlides={totalSlides}
+          />
+        </div>
       )}
 
       {/* Daily goal / activity stats */}
-      <DailyGoalBlock
-        currentStreak={user.currentStreak}
-        bestStreak={user.bestStreak}
-        totalLessonsDone={user.totalLessonsDone}
-        totalMinutes={user.totalMinutes}
-        weeklyData={weeklyData}
-      />
+      <div>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Activity</h2>
+        <DailyGoalBlock
+          currentStreak={user.currentStreak}
+          bestStreak={user.bestStreak}
+          totalLessonsDone={user.totalLessonsDone}
+          totalMinutes={user.totalMinutes}
+          weeklyData={weeklyData}
+        />
+      </div>
 
       {/* Daily challenge */}
       {dailyChallenge && (
-        <DailyChallengeWidget
-          challengeId={dailyChallenge.id}
-          question={dailyChallenge.question.question}
-          optionA={dailyChallenge.question.optionA}
-          optionB={dailyChallenge.question.optionB}
-          optionC={dailyChallenge.question.optionC}
-          optionD={dailyChallenge.question.optionD}
-          correctAnswer={dailyChallenge.question.correctAnswer}
-          explanation={dailyChallenge.question.explanation}
-          alreadyAttempted={!!dailyChallengeAttempt}
-          previousAnswer={dailyChallengeAttempt?.selectedAnswer}
-          wasCorrect={dailyChallengeAttempt?.isCorrect}
-        />
+        <div>
+          <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Daily Challenge</h2>
+          <DailyChallengeWidget
+            challengeId={dailyChallenge.id}
+            question={dailyChallenge.question.question}
+            optionA={dailyChallenge.question.optionA}
+            optionB={dailyChallenge.question.optionB}
+            optionC={dailyChallenge.question.optionC}
+            optionD={dailyChallenge.question.optionD}
+            correctAnswer={dailyChallenge.question.correctAnswer}
+            explanation={dailyChallenge.question.explanation}
+            alreadyAttempted={!!dailyChallengeAttempt}
+            previousAnswer={dailyChallengeAttempt?.selectedAnswer}
+            wasCorrect={dailyChallengeAttempt?.isCorrect}
+          />
+        </div>
       )}
 
       {/* Quick links */}
-      <QuickLinksGrid />
+      <div>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Quick Links</h2>
+        <QuickLinksGrid />
+      </div>
 
       {/* Achievements */}
       <AchievementsWidget achievementCount={achievementCount} />
 
       {/* Recommended courses */}
-      <RecommendedCourses
-        courses={recommendedCourses.map((c) => ({
-          id: c.id,
-          slug: c.slug,
-          title: c.title,
-          description: c.description,
-          level: c.level,
-          lessonCount: c.lessonCount,
-          estimatedMinutes: c.estimatedMinutes,
-          isFree: c.isFree,
-          topic: {
-            slug: c.topic.slug,
-            name: c.topic.name,
-            icon: c.topic.icon,
-          },
-        }))}
-        savedCourseIds={savedIds}
-      />
+      <div>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Recommended</h2>
+        <RecommendedCourses
+          courses={recommendedCourses.map((c) => ({
+            id: c.id,
+            slug: c.slug,
+            title: c.title,
+            description: c.description,
+            level: c.level,
+            lessonCount: c.lessonCount,
+            estimatedMinutes: c.estimatedMinutes,
+            isFree: c.isFree,
+            topic: {
+              slug: c.topic.slug,
+              name: c.topic.name,
+              icon: c.topic.icon,
+            },
+          }))}
+          savedCourseIds={savedIds}
+        />
+      </div>
 
       {/* Learning path */}
-      <LearningPath
-        topicSelections={topicSelections.map((ts) => ({
-          topicId: ts.topicId,
-          topic: {
-            slug: ts.topic.slug,
-            name: ts.topic.name,
-            icon: ts.topic.icon,
-            courses: ts.topic.courses.map((c) => ({
-              id: c.id,
-              slug: c.slug,
-              title: c.title,
-              sortOrder: c.sortOrder,
-              lessons: c.lessons,
-            })),
-          },
-        }))}
-      />
+      <div>
+        <h2 className="mb-2 text-sm font-semibold uppercase tracking-wide text-gray-500">Your Path</h2>
+        <LearningPath
+          topicSelections={topicSelections.map((ts) => ({
+            topicId: ts.topicId,
+            topic: {
+              slug: ts.topic.slug,
+              name: ts.topic.name,
+              icon: ts.topic.icon,
+              courses: ts.topic.courses.map((c) => ({
+                id: c.id,
+                slug: c.slug,
+                title: c.title,
+                sortOrder: c.sortOrder,
+                lessons: c.lessons,
+              })),
+            },
+          }))}
+        />
+      </div>
     </div>
   )
 }

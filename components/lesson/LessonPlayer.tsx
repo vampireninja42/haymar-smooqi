@@ -332,12 +332,18 @@ export function LessonPlayer({ lesson, userId }: LessonPlayerProps) {
                     text={slides[state.currentSlide].content}
                     slide={slides[state.currentSlide]}
                     onSlideComplete={nextSlide}
+                    isFirst={state.currentSlide === 0}
+                    isLast={state.currentSlide === slides.length - 1}
+                    topicIcon={lesson.course.topic.icon}
                   />
                 ) : (
                   <SlideView
                     slide={slides[state.currentSlide]}
                     mode="read"
                     currentWordIndex={-1}
+                    isFirst={state.currentSlide === 0}
+                    isLast={state.currentSlide === slides.length - 1}
+                    topicIcon={lesson.course.topic.icon}
                   />
                 )}
               </motion.div>
