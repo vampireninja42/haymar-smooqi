@@ -37,9 +37,18 @@ export default async function AppLayout({
         level={userStats?.level ?? 1}
       />
 
+      {/* Decorative background dots (vA only) */}
+      <div className="bg-dots fixed inset-0 pointer-events-none z-0" aria-hidden="true">
+        <span style={{ width: 8, height: 8, background: '#7C3AED', opacity: 0.35, top: '15%', left: '8%' }} />
+        <span style={{ width: 6, height: 6, background: '#0EA5E9', opacity: 0.3, top: '40%', right: '12%' }} />
+        <span style={{ width: 10, height: 10, background: '#10B981', opacity: 0.25, bottom: '25%', left: '15%' }} />
+        <span style={{ width: 7, height: 7, background: '#F472B6', opacity: 0.3, top: '70%', right: '20%' }} />
+        <span style={{ width: 6, height: 6, background: '#A78BFA', opacity: 0.4, top: '10%', right: '30%' }} />
+      </div>
+
       {/* Main content */}
-      <main>
-        <div className="pt-16 px-4 py-6 md:px-8 md:py-8 pb-8">
+      <main className="relative z-10">
+        <div className="pt-20 px-4 py-6 md:px-8 md:pt-20 md:pb-8 pb-8">
           {children}
         </div>
       </main>
