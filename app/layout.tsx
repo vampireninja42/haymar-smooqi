@@ -28,7 +28,9 @@ export default function RootLayout({
         <style dangerouslySetInnerHTML={{ __html: `
   :root { ${themeVars} }
   body { background: ${bodyBg} !important; min-height: 100vh; }
-  .app-shell, .app-shell > *, main, main > * { background: transparent !important; }
+  .app-shell { background: transparent !important; }
+  .app-shell > main { background: transparent !important; }
+  .app-shell > main > div { background: transparent !important; }
 ` }} />
       </head>
       <body className="antialiased font-sans">

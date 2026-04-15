@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
+import Link from 'next/link'
 import { AnimatePresence, motion } from 'framer-motion'
 
 interface NotificationPromptsProps {
@@ -38,6 +39,22 @@ export function NotificationPrompts({
     setDismissedRating(true)
   }
 
+  async function handleEnableNotifications() {
+    try {
+      const permission = await Notification.requestPermission()
+      if (permission === 'granted') {
+        await fetch('/api/user/notifications', {
+          method: 'PATCH',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ notificationsEnabled: true }),
+        })
+        dismissNotificationPrompt()
+      }
+    } catch {
+      // Permission denied or error — just dismiss
+    }
+  }
+
   return (
     <AnimatePresence>
       {showNotification && (
@@ -49,16 +66,21 @@ export function NotificationPrompts({
           className="overflow-hidden"
         >
           <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-            <span className="text-lg">&#128276;</span>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-amber-900">
-                Enable notifications
-              </p>
-              <p className="text-xs text-amber-700">
-                Get daily reminders to keep your streak alive and never miss a
-                challenge.
-              </p>
-            </div>
+            <button
+              onClick={handleEnableNotifications}
+              className="flex flex-1 items-start gap-3 cursor-pointer text-left"
+            >
+              <span className="text-lg">&#128276;</span>
+              <div>
+                <p className="text-sm font-semibold text-amber-900">
+                  Enable notifications
+                </p>
+                <p className="text-xs text-amber-700">
+                  Get daily reminders to keep your streak alive and never miss a
+                  challenge.
+                </p>
+              </div>
+            </button>
             <button
               onClick={dismissNotificationPrompt}
               className="flex-shrink-0 text-amber-400 hover:text-amber-600"
@@ -86,16 +108,21 @@ export function NotificationPrompts({
           className="overflow-hidden"
         >
           <div className="flex items-start gap-3 rounded-xl border border-amber-200 bg-amber-50 p-4">
-            <span className="text-lg">&#11088;</span>
-            <div className="flex-1">
-              <p className="text-sm font-semibold text-amber-900">
-                Enjoying Smooqi?
-              </p>
-              <p className="text-xs text-amber-700">
-                You&apos;ve completed {totalLessonsDone} lessons! If you&apos;re
-                enjoying the app, a rating would help us a lot.
-              </p>
-            </div>
+            <Link
+              href="/support"
+              className="flex flex-1 items-start gap-3 cursor-pointer"
+            >
+              <span className="text-lg">&#11088;</span>
+              <div>
+                <p className="text-sm font-semibold text-amber-900">
+                  Enjoying Smooqi?
+                </p>
+                <p className="text-xs text-amber-700">
+                  You&apos;ve completed {totalLessonsDone} lessons! If you&apos;re
+                  enjoying the app, we&apos;d love your feedback.
+                </p>
+              </div>
+            </Link>
             <button
               onClick={dismissRatingPrompt}
               className="flex-shrink-0 text-amber-400 hover:text-amber-600"

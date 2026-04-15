@@ -53,7 +53,7 @@ export function NavDrawer({ isOpen, onClose, userName, userImage, level }: NavDr
             exit={{ x: 280 }}
             transition={{ duration: 0.25, ease: 'easeOut' }}
             className="fixed top-0 right-0 z-50 flex h-full w-[280px] flex-col shadow-xl"
-            style={{ background: drawerBg }}
+            style={{ background: drawerBg, backgroundColor: drawerBg }}
           >
             {/* Close button */}
             <div className="flex h-14 items-center justify-end px-4">
