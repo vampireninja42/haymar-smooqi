@@ -2,6 +2,8 @@ import type { Metadata } from 'next'
 import { Inter, Nunito } from 'next/font/google'
 import './globals.css'
 import { getThemeCSSVars } from '@/lib/theme'
+import { auth } from '@/lib/auth'
+import { prisma } from '@/lib/db'
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' })
@@ -11,13 +13,37 @@ export const metadata: Metadata = {
   description: 'One lesson a day across 195+ topics. Build real knowledge, one bite at a time.',
 }
 
-export default function RootLayout({
+const THEME_COLOR_MAP: Record<string, { primary: string; light: string }> = {
+  purple: { primary: '#7C3AED', light: '#EDE9FE' },
+  blue: { primary: '#2563EB', light: '#EFF6FF' },
+  green: { primary: '#059669', light: '#F0FDF4' },
+  orange: { primary: '#F97316', light: '#FFF7ED' },
+  pink: { primary: '#EC4899', light: '#FDF2F8' },
+  teal: { primary: '#0D9488', light: '#F0FDFA' },
+}
+
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode
 }) {
-  const themeVars = getThemeCSSVars()
+  let themeVars = getThemeCSSVars()
   const variant = process.env.NEXT_PUBLIC_THEME_VARIANT ?? 'vA'
+
+  // Apply user theme if logged in
+  const session = await auth()
+  if (session?.user?.id) {
+    const prefs = await prisma.user.findUnique({
+      where: { id: session.user.id },
+      select: { themeColor: true, backgroundPattern: true },
+    })
+    if (prefs?.themeColor && THEME_COLOR_MAP[prefs.themeColor]) {
+      const tc = THEME_COLOR_MAP[prefs.themeColor]
+      themeVars = themeVars
+        .replace(/#7C3AED/g, tc.primary)
+        .replace(/#EDE9FE/g, tc.light)
+    }
+  }
   const bodyBg = variant === 'vA'
     ? `radial-gradient(ellipse at 20% 20%, rgba(167, 139, 250, 0.35) 0%, transparent 50%),
        radial-gradient(ellipse at 80% 10%, rgba(196, 181, 253, 0.25) 0%, transparent 40%),

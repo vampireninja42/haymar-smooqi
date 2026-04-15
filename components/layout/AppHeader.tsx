@@ -10,9 +10,10 @@ interface AppHeaderProps {
   streak: number
   level: number
   onMenuOpen: () => void
+  onNotificationsOpen: () => void
 }
 
-export function AppHeader({ streak, level, onMenuOpen }: AppHeaderProps) {
+export function AppHeader({ streak, level, onMenuOpen, onNotificationsOpen }: AppHeaderProps) {
   return (
     <header
       className="fixed top-0 left-0 right-0 z-50 flex h-14 md:h-16 items-center justify-between px-4 md:px-6 border-b border-gray-100 shadow-sm"
@@ -31,13 +32,13 @@ export function AppHeader({ streak, level, onMenuOpen }: AppHeaderProps) {
         <span className="inline-flex items-center rounded-full bg-gray-100 px-2.5 py-1 text-xs font-semibold text-gray-600">
           Lvl {level}
         </span>
-        <Link
-          href="/settings"
+        <button
+          onClick={onNotificationsOpen}
           className="flex h-9 w-9 items-center justify-center rounded-lg text-gray-500 hover:bg-gray-100 transition-colors"
           aria-label="Notifications"
         >
           <Bell className="h-5 w-5" />
-        </Link>
+        </button>
         <button
           onClick={onMenuOpen}
           className="ml-1 flex h-9 w-9 items-center justify-center rounded-lg text-gray-600 hover:bg-gray-100 transition-colors"

@@ -55,8 +55,8 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
     <div className="space-y-4">
       {topicSelections.map((ts) => {
         const colors = themeConfig.topicColors[ts.topic.slug] ?? { bg: '#F3F4F6', text: '#374151' }
-        const visibleCourses = ts.topic.courses.slice(0, 3)
-        const remainingCount = ts.topic.courses.length - 3
+        const visibleCourses = ts.topic.courses.slice(0, 4)
+        const remainingCount = ts.topic.courses.length - 4
 
         return (
           <div
@@ -66,7 +66,7 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
           >
             {/* Colored header band */}
             <div
-              className="flex items-center gap-2.5 px-4 py-3"
+              className="flex items-center gap-2.5 px-3 py-2.5"
               style={{ backgroundColor: colors.bg }}
             >
               <span className="text-xl">{ts.topic.icon}</span>
@@ -87,7 +87,7 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
                 <Link
                   key={course.id}
                   href={`/learn/${course.slug}`}
-                  className="flex items-center gap-3 py-3 group"
+                  className="flex items-center gap-3 py-2 group"
                 >
                   <span
                     className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-bold text-white"
@@ -111,7 +111,7 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
                   className="text-xs font-medium"
                   style={{ color: colors.text }}
                 >
-                  See all {ts.topic.courses.length} courses &rarr;
+                  +{remainingCount} more courses &rarr;
                 </Link>
               </div>
             )}

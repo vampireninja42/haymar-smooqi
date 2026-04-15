@@ -6,10 +6,11 @@ import { NextResponse } from 'next/server'
 const schema = z.object({
   courseId: z.string(),
   lessonId: z.string().optional(),
-  type: z.enum(['lesson_complete', 'quiz_result', 'course_complete']),
+  type: z.enum(['lesson_complete', 'quiz_result', 'course_complete', 'slide_progress']),
   quizScore: z.number().min(0).max(3).optional(),
   quizPassed: z.boolean().optional(),
   minutesSpent: z.number().optional(),
+  slidesCompleted: z.number().optional(),
 })
 
 export async function POST(req: Request) {
@@ -25,8 +26,17 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: parsed.error.flatten().fieldErrors }, { status: 400 })
     }
 
-    const { courseId, lessonId, type, quizScore, quizPassed, minutesSpent } = parsed.data
+    const { courseId, lessonId, type, quizScore, quizPassed, minutesSpent, slidesCompleted } = parsed.data
     const userId = session.user.id
+
+    if (type === 'slide_progress' && lessonId && slidesCompleted !== undefined) {
+      const progress = await prisma.userProgress.upsert({
+        where: { userId_courseId_lessonId: { userId, courseId, lessonId } },
+        create: { userId, courseId, lessonId, slidesCompleted },
+        update: { slidesCompleted },
+      })
+      return NextResponse.json({ success: true, progress })
+    }
 
     if (type === 'lesson_complete' && lessonId) {
       const progress = await prisma.userProgress.upsert({
