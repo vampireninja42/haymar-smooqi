@@ -64,12 +64,12 @@ export const authOptions: NextAuthOptions = {
       return session
     },
     async signIn({ user, account }) {
-      // For Google OAuth: ensure user exists in our DB with referralCode
       if (account?.provider === 'google' && user.email) {
         try {
           const existing = await prisma.user.findUnique({ where: { email: user.email } })
           if (!existing) {
-            await prisma.user.create({
+            // New user — create with referral code
+            const newUser = await prisma.user.create({
               data: {
                 email: user.email,
                 name: user.name,
@@ -78,6 +78,55 @@ export const authOptions: NextAuthOptions = {
                 referralCode: generateReferralCode(),
               },
             })
+            // Create the Account link for NextAuth
+            await prisma.account.create({
+              data: {
+                userId: newUser.id,
+                type: account.type,
+                provider: account.provider,
+                providerAccountId: account.providerAccountId,
+                access_token: account.access_token,
+                refresh_token: account.refresh_token,
+                expires_at: account.expires_at,
+                token_type: account.token_type,
+                scope: account.scope,
+                id_token: account.id_token,
+              },
+            })
+          } else {
+            // Existing user — check if Google Account link exists
+            const existingAccount = await prisma.account.findUnique({
+              where: {
+                provider_providerAccountId: {
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                },
+              },
+            })
+            if (!existingAccount) {
+              // Merge: link Google OAuth to existing email/password account
+              await prisma.account.create({
+                data: {
+                  userId: existing.id,
+                  type: account.type,
+                  provider: account.provider,
+                  providerAccountId: account.providerAccountId,
+                  access_token: account.access_token,
+                  refresh_token: account.refresh_token,
+                  expires_at: account.expires_at,
+                  token_type: account.token_type,
+                  scope: account.scope,
+                  id_token: account.id_token,
+                },
+              })
+              // Update image if not set
+              if (!existing.image && user.image) {
+                await prisma.user.update({
+                  where: { id: existing.id },
+                  data: { image: user.image },
+                })
+              }
+            }
           }
         } catch (err) {
           console.error('[signIn] error:', err)
