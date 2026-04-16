@@ -265,7 +265,7 @@ export function VbLessonShell({ lesson }: VbLessonShellProps) {
 
   const handleNextLesson = useCallback(() => {
     if (nextLesson) {
-      router.push(`/learn/${courseSlug}/${nextLesson.slug}`)
+      router.replace(`/learn/${courseSlug}/${nextLesson.slug}`)
     }
   }, [nextLesson, courseSlug, router])
 
