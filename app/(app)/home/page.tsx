@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { getXpForLevel } from '@/lib/xp'
+import { themeConfig } from '@/lib/theme'
 import {
   NotificationPrompts,
   ContinueLearningCard,
@@ -13,6 +14,7 @@ import {
   RecommendedCourses,
   LearningPath,
 } from '@/components/dashboard'
+import { VbDashboard } from '@/components/dashboard/VbDashboard'
 
 export const dynamic = 'force-dynamic'
 
@@ -147,6 +149,91 @@ export default async function HomePage() {
   const xpForNextLevel = getXpForLevel(user.level + 1)
   const xpProgress = user.xp - xpForCurrentLevel
   const xpNeeded = xpForNextLevel - xpForCurrentLevel
+  const xpInLevel = xpProgress
+
+  // ── vB: editorial single-column dashboard ──
+  if (themeConfig.isVB) {
+    const mappedRecommended = recommendedCourses.map((c) => ({
+      id: c.id,
+      slug: c.slug,
+      title: c.title,
+      description: c.description,
+      level: c.level,
+      lessonCount: c.lessonCount,
+      estimatedMinutes: c.estimatedMinutes,
+      isFree: c.isFree,
+      topic: {
+        slug: c.topic.slug,
+        name: c.topic.name,
+        icon: c.topic.icon,
+      },
+    }))
+    const mappedTopicSelections = topicSelections.map((ts) => ({
+      topicId: ts.topicId,
+      topic: {
+        slug: ts.topic.slug,
+        name: ts.topic.name,
+        icon: ts.topic.icon,
+        courses: ts.topic.courses.map((c) => ({
+          id: c.id,
+          slug: c.slug,
+          title: c.title,
+          sortOrder: c.sortOrder,
+          lessons: c.lessons,
+        })),
+      },
+    }))
+
+    return (
+      <VbDashboard
+        user={user}
+        continueLesson={
+          continueLesson
+            ? {
+                lesson: continueLesson.lesson
+                  ? {
+                      id: continueLesson.lesson.id,
+                      slug: continueLesson.lesson.slug,
+                      title: continueLesson.lesson.title,
+                    }
+                  : null,
+                course: continueLesson.course
+                  ? {
+                      id: continueLesson.course.id,
+                      slug: continueLesson.course.slug,
+                      title: continueLesson.course.title,
+                    }
+                  : null,
+              }
+            : null
+        }
+        dailyChallenge={
+          dailyChallenge
+            ? {
+                id: dailyChallenge.id,
+                question: dailyChallenge.question,
+              }
+            : null
+        }
+        dailyChallengeAttempt={
+          dailyChallengeAttempt
+            ? {
+                selectedAnswer: dailyChallengeAttempt.selectedAnswer,
+                isCorrect: dailyChallengeAttempt.isCorrect,
+              }
+            : null
+        }
+        achievementCount={achievementCount}
+        topicSelections={mappedTopicSelections}
+        recommendedCourses={mappedRecommended}
+        savedIds={savedIds}
+        weeklyData={weeklyData}
+        xpProgress={xpProgress}
+        xpNeeded={xpNeeded}
+        xpInLevel={xpInLevel}
+      />
+    )
+  }
 
   return (
     <div className="mx-auto max-w-2xl space-y-6">
