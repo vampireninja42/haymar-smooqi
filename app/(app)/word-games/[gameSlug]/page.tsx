@@ -1,7 +1,6 @@
 import { notFound } from 'next/navigation'
 import { prisma } from '@/lib/db'
 import { BackButton } from '@/components/ui/BackButton'
-import { WordHunter } from '@/components/word-games/WordHunter'
 import { CommSense } from '@/components/word-games/CommSense'
 import { WordSearch } from '@/components/word-games/WordSearch'
 
@@ -38,13 +37,15 @@ export default async function GamePage({ params }: Props) {
   if (gameSlug === 'word-hunter') {
     const mapped = rounds.map((r) => {
       const c = r.content as {
-        sentence: string
-        redundantWords: string[]
+        optionA: string
+        optionB: string
+        effectiveOption: 'A' | 'B'
         explanation: string
       }
       return {
-        sentence: c.sentence,
-        redundantWords: c.redundantWords,
+        optionA: c.optionA,
+        optionB: c.optionB,
+        effectiveOption: c.effectiveOption,
         explanation: c.explanation,
       }
     })
@@ -52,7 +53,7 @@ export default async function GamePage({ params }: Props) {
     return (
       <div className="max-w-2xl mx-auto py-4">
         <BackButton href="/word-games" />
-        <WordHunter rounds={mapped} />
+        <CommSense rounds={mapped} />
       </div>
     )
   }
