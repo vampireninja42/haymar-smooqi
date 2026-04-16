@@ -22,9 +22,7 @@ type SlideViewProps = {
   lessonTitle?: string
   slideIndex?: number
   totalSlides?: number
-  currentMode?: 'read' | 'audio'
   onBack?: () => void
-  onToggleMode?: (mode: 'read' | 'audio') => void
 }
 
 function formatSlideContent(content: string) {
@@ -135,7 +133,7 @@ function formatSlideContent(content: string) {
   return elements
 }
 
-export function SlideView({ slide, mode, currentWordIndex, isFirst, isLast, topicIcon, lessonTitle, slideIndex, totalSlides, currentMode, onBack, onToggleMode }: SlideViewProps) {
+export function SlideView({ slide, mode, currentWordIndex, isFirst, isLast, topicIcon, lessonTitle, slideIndex, totalSlides, onBack }: SlideViewProps) {
   const icon = topicIcon || '💡'
 
   return (
@@ -152,9 +150,7 @@ export function SlideView({ slide, mode, currentWordIndex, isFirst, isLast, topi
           lessonTitle={lessonTitle}
           slideIndex={slideIndex ?? 0}
           totalSlides={totalSlides ?? 1}
-          currentMode={currentMode ?? 'read'}
           onBack={onBack}
-          onToggleMode={onToggleMode ?? (() => {})}
         />
       )}
 

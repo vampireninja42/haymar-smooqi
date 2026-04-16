@@ -4,6 +4,7 @@ import { useState, useCallback, useEffect, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
+import { cn } from '@/lib/utils'
 import { SlideView } from './SlideView'
 import { AudioPlayer } from './AudioPlayer'
 import { LessonComplete } from './LessonComplete'
@@ -329,9 +330,7 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
                     lessonTitle={lesson.title}
                     slideIndex={state.currentSlide}
                     totalSlides={totalSlides}
-                    currentMode={state.mode}
                     onBack={handleBackToCourse}
-                    onToggleMode={toggleMode}
                   />
                 ) : (
                   <SlideView
@@ -344,9 +343,7 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
                     lessonTitle={lesson.title}
                     slideIndex={state.currentSlide}
                     totalSlides={totalSlides}
-                    currentMode={state.mode}
                     onBack={handleBackToCourse}
-                    onToggleMode={toggleMode}
                   />
                 )}
               </motion.div>
@@ -367,29 +364,56 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
               </div>
             </div>
 
-            {/* Navigation buttons */}
-            {state.mode === 'read' && (
-              <div className="max-w-[680px] mx-auto mt-6 flex justify-between">
-                <Button
-                  variant="ghost"
-                  onClick={prevSlide}
-                  disabled={state.currentSlide === 0}
-                  className="text-gray-500"
-                >
-                  &larr; Previous
-                </Button>
-                <Button
-                  onClick={nextSlide}
-                  style={{
-                    backgroundColor: 'var(--color-primary)',
-                    color: 'var(--color-primary-foreground)',
-                    borderRadius: 'var(--button-radius)',
-                  }}
-                >
-                  {state.currentSlide === totalSlides - 1 ? 'Complete Lesson' : 'Next →'}
-                </Button>
+            {/* Toggle + Navigation */}
+            <div className="max-w-[680px] mx-auto mt-6">
+              {/* Toggle — always visible, centered */}
+              <div className="flex justify-center mb-4">
+                <div className="flex bg-gray-100 rounded-full p-0.5">
+                  <button
+                    onClick={() => toggleMode('read')}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                      state.mode === 'read' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                    )}
+                  >
+                    Read
+                  </button>
+                  <button
+                    onClick={() => toggleMode('audio')}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                      state.mode === 'audio' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                    )}
+                  >
+                    Audio
+                  </button>
+                </div>
               </div>
-            )}
+
+              {/* Previous / Next — only in read mode */}
+              {state.mode === 'read' && (
+                <div className="flex justify-between">
+                  <Button
+                    variant="ghost"
+                    onClick={prevSlide}
+                    disabled={state.currentSlide === 0}
+                    className="text-gray-500"
+                  >
+                    &larr; Previous
+                  </Button>
+                  <Button
+                    onClick={nextSlide}
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      color: 'var(--color-primary-foreground)',
+                      borderRadius: 'var(--button-radius)',
+                    }}
+                  >
+                    {state.currentSlide === totalSlides - 1 ? 'Complete Lesson' : 'Next →'}
+                  </Button>
+                </div>
+              )}
+            </div>
           </div>
         )}
 

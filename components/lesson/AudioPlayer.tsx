@@ -22,14 +22,12 @@ type AudioPlayerProps = {
   lessonTitle?: string
   slideIndex?: number
   totalSlides?: number
-  currentMode?: 'read' | 'audio'
   onBack?: () => void
-  onToggleMode?: (mode: 'read' | 'audio') => void
 }
 
 const SPEED_OPTIONS = [0.75, 1, 1.25, 1.5] as const
 
-export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, topicIcon, lessonTitle, slideIndex, totalSlides, currentMode, onBack, onToggleMode }: AudioPlayerProps) {
+export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, topicIcon, lessonTitle, slideIndex, totalSlides, onBack }: AudioPlayerProps) {
   const autoAdvanceRef = useRef(false)
 
   const handleComplete = useCallback(() => {
@@ -64,7 +62,7 @@ export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, top
   if (!isSupported) {
     return (
       <div className="text-center py-8">
-        <SlideView slide={slide} mode="read" currentWordIndex={-1} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} lessonTitle={lessonTitle} slideIndex={slideIndex} totalSlides={totalSlides} currentMode={currentMode} onBack={onBack} onToggleMode={onToggleMode} />
+        <SlideView slide={slide} mode="read" currentWordIndex={-1} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} lessonTitle={lessonTitle} slideIndex={slideIndex} totalSlides={totalSlides} onBack={onBack} />
         <p className="mt-4 text-sm text-gray-500">
           Audio playback is not supported in your browser. You can read the content above.
         </p>
@@ -84,7 +82,7 @@ export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, top
 
   return (
     <div className="space-y-6">
-      <SlideView slide={slide} mode="audio" currentWordIndex={currentWordIndex} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} lessonTitle={lessonTitle} slideIndex={slideIndex} totalSlides={totalSlides} currentMode={currentMode} onBack={onBack} onToggleMode={onToggleMode} />
+      <SlideView slide={slide} mode="audio" currentWordIndex={currentWordIndex} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} lessonTitle={lessonTitle} slideIndex={slideIndex} totalSlides={totalSlides} onBack={onBack} />
 
       <div className="flex flex-col items-center gap-4">
         {/* Play/Pause button */}
