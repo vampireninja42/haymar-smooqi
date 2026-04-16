@@ -44,11 +44,11 @@ export function SocialProofSection({ learnerCount }: SocialProofSectionProps) {
           className="mx-auto mt-10 max-w-md"
         >
           <Card>
-            <CardContent className="divide-y">
+            <CardContent className="divide-y px-6 py-2">
               {leaderboard.map((entry, i) => (
                 <div
                   key={entry.name}
-                  className="flex items-center justify-between py-3 first:pt-0 last:pb-0"
+                  className="flex items-center justify-between py-4"
                 >
                   <div className="flex items-center gap-3">
                     <span className="flex h-8 w-8 items-center justify-center rounded-full bg-primary/10 text-sm font-bold text-primary">
