@@ -1393,12 +1393,17 @@ async function upsertQuizQuestions(
 async function seedDailyChallenges() {
   console.log('Seeding daily challenges...');
 
-  // Fetch first 30 quiz questions to use as daily challenges
-  const questions = await prisma.quizQuestion.findMany({
-    take: 30,
-    orderBy: { sortOrder: 'asc' },
+  // Fetch all quiz questions and shuffle for variety
+  const allQuestions = await prisma.quizQuestion.findMany({
     select: { id: true },
-  });
+  })
+
+  // Fisher-Yates shuffle
+  for (let i = allQuestions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [allQuestions[i], allQuestions[j]] = [allQuestions[j], allQuestions[i]];
+  }
+  const questions = allQuestions.slice(0, Math.max(30, allQuestions.length))
 
   if (questions.length === 0) {
     console.log('  No quiz questions found, skipping daily challenges.');
