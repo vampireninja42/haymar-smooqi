@@ -33,6 +33,7 @@ export default async function RootLayout({
 
   // Apply user theme if logged in
   const session = await getServerSession(authOptions)
+  let bgPatternCSS = ''
   if (session?.user?.id) {
     const prefs = await prisma.user.findUnique({
       where: { id: session.user.id },
@@ -43,6 +44,17 @@ export default async function RootLayout({
       themeVars = themeVars
         .replace(/#7C3AED/g, tc.primary)
         .replace(/#EDE9FE/g, tc.light)
+    }
+    if (prefs?.backgroundPattern && prefs.backgroundPattern !== 'solid') {
+      const patternMap: Record<string, { style: string; size: string }> = {
+        dots: { style: 'radial-gradient(circle, rgba(124,58,237,0.15) 1px, transparent 1px)', size: '20px 20px' },
+        grid: { style: 'linear-gradient(rgba(124,58,237,0.08) 1px, transparent 1px), linear-gradient(90deg, rgba(124,58,237,0.08) 1px, transparent 1px)', size: '40px 40px' },
+        waves: { style: 'repeating-linear-gradient(45deg, rgba(124,58,237,0.05) 0px, rgba(124,58,237,0.05) 2px, transparent 2px, transparent 10px)', size: '14px 14px' },
+      }
+      const pm = patternMap[prefs.backgroundPattern]
+      if (pm) {
+        bgPatternCSS = `--bg-pattern: ${pm.style}; --bg-pattern-size: ${pm.size};`
+      }
     }
   }
   const bodyBg = variant === 'vA'
@@ -75,8 +87,9 @@ export default async function RootLayout({
     <html lang="en" className={`${inter.variable} ${nunito.variable}`}>
       <head>
         <style dangerouslySetInnerHTML={{ __html: `
-  :root { ${themeVars} }
-  body { background: ${bodyBg} !important; min-height: 100vh; }
+  :root { ${themeVars} --bg-pattern: none; --bg-pattern-size: auto; ${bgPatternCSS} }
+  body { background: ${bodyBg} !important; min-height: 100vh; position: relative; }
+  body::after { content: ''; position: fixed; inset: 0; background-image: var(--bg-pattern); background-size: var(--bg-pattern-size); pointer-events: none; z-index: 0; }
   .app-shell { background: transparent !important; }
   .app-shell > main { background: transparent !important; }
   .app-shell > main > div { background: transparent !important; }

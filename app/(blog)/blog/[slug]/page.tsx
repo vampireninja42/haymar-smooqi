@@ -26,6 +26,7 @@ export default async function BlogPostPage({
 
   return (
     <div className="mx-auto max-w-3xl">
+      <div className="rounded-3xl bg-white/80 backdrop-blur-sm px-6 py-8 md:px-10 md:py-10 shadow-sm">
       <BackButton href="/blog" label="Back to Blog" />
 
       <TopicIllustration topic={post.topic} className="h-48 w-full mb-6 rounded-2xl" />
@@ -75,6 +76,7 @@ export default async function BlogPostPage({
           </div>
         </div>
       )}
+      </div>
     </div>
   )
 }

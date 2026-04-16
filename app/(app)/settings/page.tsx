@@ -42,6 +42,7 @@ const COLOR_MAP: Record<string, string> = {
   rose: '#E11D48',
   orange: '#EA580C',
   teal: '#0D9488',
+  pink: '#EC4899',
 }
 
 const PATTERN_STYLES: Record<string, string> = {
@@ -92,6 +93,13 @@ export default function SettingsPage() {
           setThemeColor(data.themeColor ?? 'purple')
           setBgPattern(data.backgroundPattern ?? 'solid')
           setNotifications(data.notificationsEnabled)
+          // Apply saved pattern CSS vars on mount
+          const savedPattern = data.backgroundPattern ?? 'solid'
+          const savedStyle = PATTERN_STYLES[savedPattern] ?? ''
+          if (savedPattern !== 'solid' && savedStyle) {
+            document.documentElement.style.setProperty('--bg-pattern', savedStyle)
+            document.documentElement.style.setProperty('--bg-pattern-size', PATTERN_SIZES[savedPattern] ?? 'auto')
+          }
         }
       } catch {
         // ignore
@@ -116,15 +124,13 @@ export default function SettingsPage() {
 
   async function handlePatternChange(pattern: string) {
     setBgPattern(pattern)
-    // Apply live to body
-    const bodyEl = document.body
     const style = PATTERN_STYLES[pattern] ?? ''
     if (pattern === 'solid' || !style) {
-      bodyEl.style.backgroundImage = ''
-      bodyEl.style.backgroundSize = ''
+      document.documentElement.style.setProperty('--bg-pattern', 'none')
+      document.documentElement.style.setProperty('--bg-pattern-size', 'auto')
     } else {
-      bodyEl.style.backgroundImage = style
-      bodyEl.style.backgroundSize = PATTERN_SIZES[pattern] ?? 'auto'
+      document.documentElement.style.setProperty('--bg-pattern', style)
+      document.documentElement.style.setProperty('--bg-pattern-size', PATTERN_SIZES[pattern] ?? 'auto')
     }
     await fetch('/api/user/settings', {
       method: 'PATCH',

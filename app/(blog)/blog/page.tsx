@@ -16,6 +16,7 @@ export default async function BlogPage() {
 
   return (
     <div className="mx-auto max-w-5xl">
+      <div className="rounded-3xl bg-white/80 backdrop-blur-sm px-6 py-8 md:px-10 md:py-10 shadow-sm">
       <BackButton href="/" />
 
       <div className="mb-8">
@@ -89,6 +90,7 @@ export default async function BlogPage() {
         <h3 className="text-xl font-bold text-white">Get smarter every week</h3>
         <p className="mt-2 text-sm text-white/80">Join 10,000+ learners. One article + one actionable tip, every Tuesday.</p>
         <EmailSignup />
+      </div>
       </div>
     </div>
   )
