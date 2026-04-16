@@ -29,7 +29,7 @@ export function LessonHeader({
         {lessonTitle}
       </h1>
 
-      <span className="text-xs text-gray-400 pr-1">{slideIndex + 1}/{totalSlides}</span>
+      <span className="text-xs text-gray-400 min-w-[52px] text-right">{slideIndex + 1}/{totalSlides}</span>
     </div>
   )
 }
