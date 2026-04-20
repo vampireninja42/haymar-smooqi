@@ -2,184 +2,128 @@
 
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 
-export type SpeechPlayerError = 'unavailable' | 'network' | null
+export type SpeechPlayerError = 'unavailable' | null
 
 export function useSpeechPlayer(text: string, onComplete: () => void) {
-  const audioRef = useRef<HTMLAudioElement | null>(null)
-  const audioUrlRef = useRef<string | null>(null)
-  const highlightTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
-  const abortControllerRef = useRef<AbortController | null>(null)
-
+  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
   const [isPlaying, setIsPlaying] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [currentWordIndex, setCurrentWordIndex] = useState(-1)
   const [speed, setSpeed] = useState(1)
-  const [error, setError] = useState<SpeechPlayerError>(null)
+  const [isSupported, setIsSupported] = useState(true)
+  const [error] = useState<SpeechPlayerError>(null)
 
   const words = useMemo(() => text.split(/\s+/).filter(Boolean), [text])
 
-  const clearHighlightTimer = useCallback(() => {
-    if (highlightTimerRef.current) {
-      clearInterval(highlightTimerRef.current)
-      highlightTimerRef.current = null
+  const wordPositions = useMemo(() => {
+    const positions: number[] = []
+    let offset = 0
+    for (const word of words) {
+      const idx = text.indexOf(word, offset)
+      positions.push(idx)
+      offset = idx + word.length
+    }
+    return positions
+  }, [text, words])
+
+  useEffect(() => {
+    if (typeof window !== 'undefined' && !('speechSynthesis' in window)) {
+      setIsSupported(false)
     }
   }, [])
 
-  const cleanupAudio = useCallback(() => {
-    clearHighlightTimer()
-    if (audioRef.current) {
-      audioRef.current.pause()
-      audioRef.current.src = ''
-      audioRef.current = null
-    }
-    if (audioUrlRef.current) {
-      URL.revokeObjectURL(audioUrlRef.current)
-      audioUrlRef.current = null
-    }
-  }, [clearHighlightTimer])
-
-  const startWordHighlighting = useCallback(
-    (durationSec: number) => {
-      clearHighlightTimer()
-      if (!words.length || !Number.isFinite(durationSec) || durationSec <= 0) {
-        return
-      }
-      const perWordMs = (durationSec * 1000) / words.length
-      // Tick a little faster than one-word intervals so the highlight reads smoothly.
-      const tickMs = Math.max(40, Math.min(perWordMs / 2, 200))
-      highlightTimerRef.current = setInterval(() => {
-        const audio = audioRef.current
-        if (!audio) return
-        const elapsedMs = audio.currentTime * 1000
-        const index = Math.min(words.length - 1, Math.floor(elapsedMs / perWordMs))
-        setCurrentWordIndex(index)
-      }, tickMs)
-    },
-    [clearHighlightTimer, words.length]
-  )
-
   const play = useCallback(async () => {
-    if (!text.trim()) return
+    if (!isSupported || !text.trim()) return
 
-    // Tear down any previous playback before starting fresh.
-    cleanupAudio()
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-    }
-    const controller = new AbortController()
-    abortControllerRef.current = controller
-
-    setError(null)
     setIsLoading(true)
-    setCurrentWordIndex(-1)
+    speechSynthesis.cancel()
 
-    try {
-      const response = await fetch('/api/tts', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ text }),
-        signal: controller.signal,
-      })
+    const utterance = new SpeechSynthesisUtterance(text)
+    utterance.rate = speed
 
-      if (!response.ok) {
-        if (response.status === 503) {
-          setError('unavailable')
-        } else {
-          setError('network')
+    utterance.onboundary = (event) => {
+      if (event.name === 'word') {
+        const charIndex = event.charIndex
+        let foundIndex = 0
+        for (let i = 0; i < wordPositions.length; i++) {
+          if (wordPositions[i] <= charIndex) {
+            foundIndex = i
+          } else {
+            break
+          }
         }
-        setIsLoading(false)
-        return
+        setCurrentWordIndex(foundIndex)
       }
+    }
 
-      const blob = await response.blob()
-      const url = URL.createObjectURL(blob)
-      audioUrlRef.current = url
-
-      const audio = new Audio(url)
-      audio.playbackRate = speed
-      audioRef.current = audio
-
-      audio.onloadedmetadata = () => {
-        startWordHighlighting(audio.duration)
-      }
-
-      audio.onended = () => {
-        clearHighlightTimer()
-        setIsPlaying(false)
-        setIsPaused(false)
-        setCurrentWordIndex(-1)
-        cleanupAudio()
-        onComplete()
-      }
-
-      audio.onerror = () => {
-        clearHighlightTimer()
-        setError('network')
-        setIsPlaying(false)
-        setIsPaused(false)
-        cleanupAudio()
-      }
-
-      await audio.play()
+    utterance.onstart = () => {
+      setIsLoading(false)
       setIsPlaying(true)
       setIsPaused(false)
-    } catch (err) {
-      if ((err as { name?: string })?.name === 'AbortError') return
-      console.error('TTS playback failed:', err)
-      setError('network')
-      cleanupAudio()
-    } finally {
-      setIsLoading(false)
     }
-  }, [text, speed, cleanupAudio, clearHighlightTimer, startWordHighlighting, onComplete])
+
+    utterance.onend = () => {
+      setIsPlaying(false)
+      setIsPaused(false)
+      setCurrentWordIndex(-1)
+      utteranceRef.current = null
+      onComplete()
+    }
+
+    utterance.onerror = () => {
+      setIsLoading(false)
+      setIsPlaying(false)
+      setIsPaused(false)
+      setCurrentWordIndex(-1)
+    }
+
+    utteranceRef.current = utterance
+    speechSynthesis.speak(utterance)
+  }, [text, speed, wordPositions, onComplete, isSupported])
 
   const pause = useCallback(() => {
-    if (audioRef.current && !audioRef.current.paused) {
-      audioRef.current.pause()
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      speechSynthesis.pause()
       setIsPaused(true)
     }
   }, [])
 
   const resume = useCallback(() => {
-    if (audioRef.current && audioRef.current.paused) {
-      void audioRef.current.play()
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      speechSynthesis.resume()
       setIsPaused(false)
     }
   }, [])
 
   const cancel = useCallback(() => {
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort()
-      abortControllerRef.current = null
+    if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+      speechSynthesis.cancel()
     }
-    cleanupAudio()
     setIsPlaying(false)
     setIsPaused(false)
+    setIsLoading(false)
     setCurrentWordIndex(-1)
-  }, [cleanupAudio])
+    utteranceRef.current = null
+  }, [])
 
   const changeSpeed = useCallback(
     (newSpeed: number) => {
       setSpeed(newSpeed)
-      if (audioRef.current) {
-        audioRef.current.playbackRate = newSpeed
-        // Re-base the highlight cadence to the new effective duration.
-        const remaining = audioRef.current.duration - audioRef.current.currentTime
-        if (Number.isFinite(remaining) && remaining > 0) {
-          startWordHighlighting(audioRef.current.duration / newSpeed)
-        }
+      if (isPlaying) {
+        cancel()
       }
     },
-    [startWordHighlighting]
+    [isPlaying, cancel]
   )
 
   useEffect(() => {
     return () => {
-      if (abortControllerRef.current) abortControllerRef.current.abort()
-      cleanupAudio()
+      if (typeof window !== 'undefined' && 'speechSynthesis' in window) {
+        speechSynthesis.cancel()
+      }
     }
-  }, [cleanupAudio])
+  }, [])
 
   return {
     isPlaying,
@@ -188,8 +132,7 @@ export function useSpeechPlayer(text: string, onComplete: () => void) {
     currentWordIndex,
     speed,
     words,
-    // Voicebox runs server-side; the browser itself always "supports" audio playback.
-    isSupported: true,
+    isSupported,
     error,
     play,
     pause,

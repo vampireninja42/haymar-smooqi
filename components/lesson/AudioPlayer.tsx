@@ -45,7 +45,7 @@ export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, top
     isLoading,
     currentWordIndex,
     speed,
-    error,
+    isSupported,
     play,
     pause,
     resume,
@@ -75,14 +75,9 @@ export function AudioPlayer({ text, slide, onSlideComplete, isFirst, isLast, top
     <div className="space-y-6">
       <SlideView slide={slide} mode="audio" currentWordIndex={currentWordIndex} isFirst={isFirst} isLast={isLast} topicIcon={topicIcon} lessonTitle={lessonTitle} slideIndex={slideIndex} totalSlides={totalSlides} onBack={onBack} />
 
-      {error === 'unavailable' && (
+      {!isSupported && (
         <div className="mx-auto max-w-md rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          🎧 Audio mode is temporarily unavailable. Reading mode works normally.
-        </div>
-      )}
-      {error === 'network' && (
-        <div className="mx-auto max-w-md rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-800">
-          🎧 Couldn’t load audio right now. Try again in a moment.
+          🎧 Audio mode isn’t supported in this browser. Reading mode works normally.
         </div>
       )}
 

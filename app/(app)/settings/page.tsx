@@ -9,13 +9,11 @@ import { Separator } from '@/components/ui/separator'
 import { themeConfig } from '@/lib/theme'
 import { cn } from '@/lib/utils'
 import { BackButton } from '@/components/ui/BackButton'
-import { VOICE_KEYS, VOICE_LABELS, DEFAULT_VOICE_KEY } from '@/lib/voiceMap'
 
 type UserSettings = {
   provider: string
   themeMode: string
   notificationsEnabled: boolean
-  preferredVoice: string
   subscriptionStatus: string
   subscriptionPlan: string | null
 }
@@ -81,10 +79,6 @@ export default function SettingsPage() {
   // Notifications
   const [notifications, setNotifications] = useState(false)
 
-  // Audio
-  const [preferredVoice, setPreferredVoice] = useState<string>(DEFAULT_VOICE_KEY)
-  const [voiceSavedAt, setVoiceSavedAt] = useState<number | null>(null)
-
   // Delete account
   const [showDeleteModal, setShowDeleteModal] = useState(false)
   const [deleteConfirm, setDeleteConfirm] = useState('')
@@ -100,9 +94,6 @@ export default function SettingsPage() {
           setThemeColor(data.themeColor ?? 'purple')
           setBgPattern(data.backgroundPattern ?? 'solid')
           setNotifications(data.notificationsEnabled)
-          if (typeof data.preferredVoice === 'string' && VOICE_KEYS.includes(data.preferredVoice)) {
-            setPreferredVoice(data.preferredVoice)
-          }
           // Apply saved pattern CSS vars on mount
           const savedPattern = data.backgroundPattern ?? 'solid'
           const savedStyle = PATTERN_STYLES[savedPattern] ?? ''
@@ -147,26 +138,6 @@ export default function SettingsPage() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ backgroundPattern: pattern }),
     })
-  }
-
-  async function handleVoiceChange(voice: string) {
-    if (!VOICE_KEYS.includes(voice) || voice === preferredVoice) return
-    setPreferredVoice(voice)
-    try {
-      const res = await fetch('/api/user/settings', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ preferredVoice: voice }),
-      })
-      if (res.ok) {
-        setVoiceSavedAt(Date.now())
-        setTimeout(() => {
-          setVoiceSavedAt((t) => (t && Date.now() - t >= 1800 ? null : t))
-        }, 2000)
-      }
-    } catch {
-      // ignore — user can retry
-    }
   }
 
   async function handleNotificationsToggle() {
@@ -298,60 +269,6 @@ export default function SettingsPage() {
         <p className="text-xs text-gray-400 mt-3">
           {'\uD83D\uDCA1'} Theme changes apply instantly.
         </p>
-      </div>
-
-      {/* Audio */}
-      <div
-        className={`rounded-[var(--card-radius)] p-4 shadow-sm ${
-          themeConfig.isVA ? 'glass-card' : 'bg-white'
-        }`}
-      >
-        <div className="flex items-center justify-between">
-          <h3 className="text-sm font-semibold text-gray-700">Audio</h3>
-          {voiceSavedAt && Date.now() - voiceSavedAt < 1800 && (
-            <span className="text-xs text-[var(--color-primary)]">Saved</span>
-          )}
-        </div>
-        <p className="mt-1 text-xs text-gray-500">Lesson Voice</p>
-        <div
-          role="radiogroup"
-          aria-label="Lesson Voice"
-          className="mt-3 space-y-2"
-        >
-          {VOICE_KEYS.map((key) => {
-            const selected = preferredVoice === key
-            return (
-              <button
-                key={key}
-                type="button"
-                role="radio"
-                aria-checked={selected}
-                onClick={() => handleVoiceChange(key)}
-                className={cn(
-                  'flex w-full items-center justify-between rounded-lg border px-3 py-2 text-sm font-medium transition-colors',
-                  selected
-                    ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)] text-gray-900'
-                    : 'border-gray-200 bg-white text-gray-600 hover:bg-gray-50'
-                )}
-              >
-                <span>{VOICE_LABELS[key]}</span>
-                <span
-                  className={cn(
-                    'flex h-4 w-4 items-center justify-center rounded-full border',
-                    selected
-                      ? 'border-[var(--color-primary)]'
-                      : 'border-gray-300'
-                  )}
-                  aria-hidden
-                >
-                  {selected && (
-                    <span className="h-2 w-2 rounded-full bg-[var(--color-primary)]" />
-                  )}
-                </span>
-              </button>
-            )
-          })}
-        </div>
       </div>
 
       {/* Account - Change Password (email users only) */}
