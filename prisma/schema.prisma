@@ -38,6 +38,7 @@ model User {
   themeMode           String    @default("light")
   themeColor          String    @default("purple")
   backgroundPattern   String    @default("solid")
+  preferredVoice      String    @default("voice_1")
 
   createdAt           DateTime  @default(now())
   updatedAt           DateTime  @updatedAt

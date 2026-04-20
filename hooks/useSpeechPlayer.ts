@@ -2,144 +2,195 @@
 
 import { useState, useCallback, useRef, useMemo, useEffect } from 'react'
 
-function getBestVoice(): SpeechSynthesisVoice | null {
-  if (typeof window === 'undefined' || !('speechSynthesis' in window)) return null
-
-  const voices = speechSynthesis.getVoices()
-  if (!voices.length) return null
-
-  // Priority list of high-quality natural voices by name
-  const preferredNames = [
-    'Samantha',           // iOS/macOS — best quality
-    'Karen',              // iOS Australian — also excellent
-    'Google US English',  // Android/Chrome — natural
-    'Microsoft Aria Online (Natural) - English (United States)', // Edge/Windows
-    'Microsoft Jenny Online (Natural) - English (United States)',
-    'Alex',               // macOS legacy — still good
-    'Victoria',           // macOS
-    'Google UK English Female', // Chrome fallback
-  ]
-
-  for (const name of preferredNames) {
-    const match = voices.find((v) => v.name === name)
-    if (match) return match
-  }
-
-  // Fall back: any en-US voice
-  const enUS = voices.find((v) => v.lang === 'en-US')
-  if (enUS) return enUS
-
-  // Fall back: any English voice
-  const en = voices.find((v) => v.lang.startsWith('en'))
-  if (en) return en
-
-  return null
-}
+export type SpeechPlayerError = 'unavailable' | 'network' | null
 
 export function useSpeechPlayer(text: string, onComplete: () => void) {
-  const utteranceRef = useRef<SpeechSynthesisUtterance | null>(null)
+  const audioRef = useRef<HTMLAudioElement | null>(null)
+  const audioUrlRef = useRef<string | null>(null)
+  const highlightTimerRef = useRef<ReturnType<typeof setInterval> | null>(null)
+  const abortControllerRef = useRef<AbortController | null>(null)
+
   const [isPlaying, setIsPlaying] = useState(false)
   const [isPaused, setIsPaused] = useState(false)
+  const [isLoading, setIsLoading] = useState(false)
   const [currentWordIndex, setCurrentWordIndex] = useState(-1)
   const [speed, setSpeed] = useState(1)
-  const [isSupported, setIsSupported] = useState(true)
+  const [error, setError] = useState<SpeechPlayerError>(null)
 
-  const words = useMemo(() => text.split(/\s+/), [text])
+  const words = useMemo(() => text.split(/\s+/).filter(Boolean), [text])
 
-  const wordPositions = useMemo(() => {
-    const positions: number[] = []
-    let offset = 0
-    for (const word of words) {
-      const idx = text.indexOf(word, offset)
-      positions.push(idx)
-      offset = idx + word.length
-    }
-    return positions
-  }, [text, words])
-
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !('speechSynthesis' in window)) {
-      setIsSupported(false)
+  const clearHighlightTimer = useCallback(() => {
+    if (highlightTimerRef.current) {
+      clearInterval(highlightTimerRef.current)
+      highlightTimerRef.current = null
     }
   }, [])
 
-  const play = useCallback(() => {
-    if (!isSupported) return
+  const cleanupAudio = useCallback(() => {
+    clearHighlightTimer()
+    if (audioRef.current) {
+      audioRef.current.pause()
+      audioRef.current.src = ''
+      audioRef.current = null
+    }
+    if (audioUrlRef.current) {
+      URL.revokeObjectURL(audioUrlRef.current)
+      audioUrlRef.current = null
+    }
+  }, [clearHighlightTimer])
 
-    speechSynthesis.cancel()
-    const utterance = new SpeechSynthesisUtterance(text)
-    utterance.rate = speed
-
-    // Apply best available voice (resolved at play time — iOS loads voices
-    // synchronously after a user gesture, so this runs here, not on mount).
-    const voice = getBestVoice()
-    if (voice) utterance.voice = voice
-
-    utterance.onboundary = (event) => {
-      if (event.name === 'word') {
-        const charIndex = event.charIndex
-        let foundIndex = 0
-        for (let i = 0; i < wordPositions.length; i++) {
-          if (wordPositions[i] <= charIndex) {
-            foundIndex = i
-          } else {
-            break
-          }
-        }
-        setCurrentWordIndex(foundIndex)
+  const startWordHighlighting = useCallback(
+    (durationSec: number) => {
+      clearHighlightTimer()
+      if (!words.length || !Number.isFinite(durationSec) || durationSec <= 0) {
+        return
       }
-    }
+      const perWordMs = (durationSec * 1000) / words.length
+      // Tick a little faster than one-word intervals so the highlight reads smoothly.
+      const tickMs = Math.max(40, Math.min(perWordMs / 2, 200))
+      highlightTimerRef.current = setInterval(() => {
+        const audio = audioRef.current
+        if (!audio) return
+        const elapsedMs = audio.currentTime * 1000
+        const index = Math.min(words.length - 1, Math.floor(elapsedMs / perWordMs))
+        setCurrentWordIndex(index)
+      }, tickMs)
+    },
+    [clearHighlightTimer, words.length]
+  )
 
-    utterance.onend = () => {
-      setIsPlaying(false)
+  const play = useCallback(async () => {
+    if (!text.trim()) return
+
+    // Tear down any previous playback before starting fresh.
+    cleanupAudio()
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+    }
+    const controller = new AbortController()
+    abortControllerRef.current = controller
+
+    setError(null)
+    setIsLoading(true)
+    setCurrentWordIndex(-1)
+
+    try {
+      const response = await fetch('/api/tts', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text }),
+        signal: controller.signal,
+      })
+
+      if (!response.ok) {
+        if (response.status === 503) {
+          setError('unavailable')
+        } else {
+          setError('network')
+        }
+        setIsLoading(false)
+        return
+      }
+
+      const blob = await response.blob()
+      const url = URL.createObjectURL(blob)
+      audioUrlRef.current = url
+
+      const audio = new Audio(url)
+      audio.playbackRate = speed
+      audioRef.current = audio
+
+      audio.onloadedmetadata = () => {
+        startWordHighlighting(audio.duration)
+      }
+
+      audio.onended = () => {
+        clearHighlightTimer()
+        setIsPlaying(false)
+        setIsPaused(false)
+        setCurrentWordIndex(-1)
+        cleanupAudio()
+        onComplete()
+      }
+
+      audio.onerror = () => {
+        clearHighlightTimer()
+        setError('network')
+        setIsPlaying(false)
+        setIsPaused(false)
+        cleanupAudio()
+      }
+
+      await audio.play()
+      setIsPlaying(true)
       setIsPaused(false)
-      setCurrentWordIndex(-1)
-      onComplete()
+    } catch (err) {
+      if ((err as { name?: string })?.name === 'AbortError') return
+      console.error('TTS playback failed:', err)
+      setError('network')
+      cleanupAudio()
+    } finally {
+      setIsLoading(false)
     }
-
-    utteranceRef.current = utterance
-    speechSynthesis.speak(utterance)
-    setIsPlaying(true)
-    setIsPaused(false)
-  }, [text, speed, wordPositions, onComplete, isSupported])
+  }, [text, speed, cleanupAudio, clearHighlightTimer, startWordHighlighting, onComplete])
 
   const pause = useCallback(() => {
-    speechSynthesis.pause()
-    setIsPaused(true)
+    if (audioRef.current && !audioRef.current.paused) {
+      audioRef.current.pause()
+      setIsPaused(true)
+    }
   }, [])
 
   const resume = useCallback(() => {
-    speechSynthesis.resume()
-    setIsPaused(false)
+    if (audioRef.current && audioRef.current.paused) {
+      void audioRef.current.play()
+      setIsPaused(false)
+    }
   }, [])
 
   const cancel = useCallback(() => {
-    speechSynthesis.cancel()
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort()
+      abortControllerRef.current = null
+    }
+    cleanupAudio()
     setIsPlaying(false)
     setIsPaused(false)
     setCurrentWordIndex(-1)
-  }, [])
+  }, [cleanupAudio])
 
-  const changeSpeed = useCallback((newSpeed: number) => {
-    setSpeed(newSpeed)
-    if (isPlaying) {
-      cancel()
-    }
-  }, [isPlaying, cancel])
+  const changeSpeed = useCallback(
+    (newSpeed: number) => {
+      setSpeed(newSpeed)
+      if (audioRef.current) {
+        audioRef.current.playbackRate = newSpeed
+        // Re-base the highlight cadence to the new effective duration.
+        const remaining = audioRef.current.duration - audioRef.current.currentTime
+        if (Number.isFinite(remaining) && remaining > 0) {
+          startWordHighlighting(audioRef.current.duration / newSpeed)
+        }
+      }
+    },
+    [startWordHighlighting]
+  )
 
   useEffect(() => {
     return () => {
-      speechSynthesis.cancel()
+      if (abortControllerRef.current) abortControllerRef.current.abort()
+      cleanupAudio()
     }
-  }, [])
+  }, [cleanupAudio])
 
   return {
     isPlaying,
     isPaused,
+    isLoading,
     currentWordIndex,
     speed,
     words,
-    isSupported,
+    // Voicebox runs server-side; the browser itself always "supports" audio playback.
+    isSupported: true,
+    error,
     play,
     pause,
     resume,

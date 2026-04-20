@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { DEFAULT_VOICE_KEY, VOICE_KEYS } from '@/lib/voiceMap'
 
 export async function GET() {
   const session = await getServerSession(authOptions)
@@ -17,6 +18,7 @@ export async function GET() {
       themeColor: true,
       backgroundPattern: true,
       notificationsEnabled: true,
+      preferredVoice: true,
       subscriptionStatus: true,
       subscriptionPlan: true,
     },
@@ -26,7 +28,13 @@ export async function GET() {
     return NextResponse.json({ error: 'Not found' }, { status: 404 })
   }
 
-  return NextResponse.json(user)
+  // Always return an abstract voice key — never a provider profile_id.
+  const preferredVoice =
+    user.preferredVoice && VOICE_KEYS.includes(user.preferredVoice)
+      ? user.preferredVoice
+      : DEFAULT_VOICE_KEY
+
+  return NextResponse.json({ ...user, preferredVoice })
 }
 
 const patchSchema = z.object({
@@ -34,6 +42,7 @@ const patchSchema = z.object({
   backgroundPattern: z.string().optional(),
   themeMode: z.string().optional(),
   notificationsEnabled: z.boolean().optional(),
+  preferredVoice: z.enum(VOICE_KEYS as [string, ...string[]]).optional(),
 })
 
 export async function PATCH(req: Request) {
@@ -52,6 +61,7 @@ export async function PATCH(req: Request) {
   if (parsed.data.themeColor !== undefined) data.themeColor = parsed.data.themeColor
   if (parsed.data.backgroundPattern !== undefined) data.backgroundPattern = parsed.data.backgroundPattern
   if (parsed.data.notificationsEnabled !== undefined) data.notificationsEnabled = parsed.data.notificationsEnabled
+  if (parsed.data.preferredVoice !== undefined) data.preferredVoice = parsed.data.preferredVoice
 
   if (Object.keys(data).length === 0) {
     return NextResponse.json({ success: true })
