@@ -820,7 +820,8 @@ async function seedWordGames() {
     {
       content: {
         message: 'I want to make sure everyone on the team feels comfortable sharing their concerns before we finalize this decision.',
-        conceptWords: ['psychological safety', 'inclusion', 'consensus', 'vulnerability', 'trust'],
+        conceptWords: ['psychological safety', 'inclusion', 'consensus'],
+        distractorWords: ['competition', 'urgency', 'efficiency'],
         explanation: 'This message creates psychological safety by explicitly inviting dissent.',
       },
       difficulty: 'easy',
@@ -828,7 +829,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I appreciate you raising this \u2014 let's explore what's behind the hesitation before we move forward.",
-        conceptWords: ['curiosity', 'empathy', 'pause', 'discovery', 'openness'],
+        conceptWords: ['curiosity', 'empathy', 'pause'],
+        distractorWords: ['decisiveness', 'dismissal', 'persuasion'],
         explanation: 'Rather than pushing through resistance, this message slows down to understand it.',
       },
       difficulty: 'easy',
@@ -836,7 +838,8 @@ async function seedWordGames() {
     {
       content: {
         message: "Here's what I know, here's what I don't know, and here's what I'm going to find out.",
-        conceptWords: ['transparency', 'accountability', 'honesty', 'clarity', 'ownership'],
+        conceptWords: ['transparency', 'honesty', 'clarity'],
+        distractorWords: ['authority', 'certainty', 'expertise'],
         explanation: 'Separating known from unknown is a mark of intellectual honesty.',
       },
       difficulty: 'easy',
@@ -844,7 +847,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I'm going to be direct with you because I think you can handle it and because I respect your time.",
-        conceptWords: ['directness', 'respect', 'candor', 'trust', 'efficiency'],
+        conceptWords: ['directness', 'respect', 'candor'],
+        distractorWords: ['bluntness', 'impatience', 'authority'],
         explanation: 'Framing direct feedback as a sign of respect reframes honesty as care.',
       },
       difficulty: 'easy',
@@ -852,7 +856,8 @@ async function seedWordGames() {
     {
       content: {
         message: "Before I respond, help me understand \u2014 what outcome are you hoping for from this conversation?",
-        conceptWords: ['intent', 'listening', 'alignment', 'questioning', 'understanding'],
+        conceptWords: ['intent', 'listening', 'alignment'],
+        distractorWords: ['negotiation', 'assertiveness', 'closure'],
         explanation: 'This question resets the conversation toward shared goals.',
       },
       difficulty: 'easy',
@@ -860,7 +865,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I made the wrong call on that. Here's what I'll do differently.",
-        conceptWords: ['accountability', 'learning', 'ownership', 'growth', 'resilience'],
+        conceptWords: ['accountability', 'learning', 'ownership'],
+        distractorWords: ['apology', 'delegation', 'justification'],
         explanation: 'Admitting error without excuse builds far more trust than deflecting blame.',
       },
       difficulty: 'medium',
@@ -868,7 +874,8 @@ async function seedWordGames() {
     {
       content: {
         message: 'Let me make sure I\'m understanding your concern correctly before I respond.',
-        conceptWords: ['active listening', 'reflection', 'empathy', 'validation', 'clarity'],
+        conceptWords: ['active listening', 'reflection', 'validation'],
+        distractorWords: ['rebuttal', 'summarization', 'negotiation'],
         explanation: 'This is reflective listening in action.',
       },
       difficulty: 'medium',
@@ -876,7 +883,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I'd rather we debate this hard now than discover the problem after we've committed.",
-        conceptWords: ['premortem', 'conflict', 'rigor', 'safety', 'honesty'],
+        conceptWords: ['premortem', 'rigor', 'healthy conflict'],
+        distractorWords: ['consensus', 'speed', 'diplomacy'],
         explanation: 'Inviting upfront debate prevents costly downstream errors.',
       },
       difficulty: 'medium',
@@ -884,7 +892,8 @@ async function seedWordGames() {
     {
       content: {
         message: "You clearly put real thought into this \u2014 here's where I see it differently.",
-        conceptWords: ['acknowledgment', 'respect', 'disagreement', 'diplomacy', 'persuasion'],
+        conceptWords: ['acknowledgment', 'respectful disagreement', 'diplomacy'],
+        distractorWords: ['flattery', 'avoidance', 'confrontation'],
         explanation: 'Acknowledging effort before disagreeing disarms defensiveness.',
       },
       difficulty: 'medium',
@@ -892,7 +901,8 @@ async function seedWordGames() {
     {
       content: {
         message: 'What would make this a yes for you?',
-        conceptWords: ['negotiation', 'curiosity', 'listening', 'empathy', 'problem-solving'],
+        conceptWords: ['negotiation', 'curiosity', 'problem-solving'],
+        distractorWords: ['pressure', 'compromise', 'deflection'],
         explanation: "Instead of defending your position, you explore what the other person needs.",
       },
       difficulty: 'medium',
@@ -900,7 +910,8 @@ async function seedWordGames() {
     {
       content: {
         message: 'I want to name what I\'m seeing so we can address it directly rather than dance around it.',
-        conceptWords: ['directness', 'naming', 'courage', 'transparency', 'trust'],
+        conceptWords: ['naming', 'courage', 'directness'],
+        distractorWords: ['accusation', 'gossip', 'formality'],
         explanation: 'Naming dynamics directly requires courage and builds trust.',
       },
       difficulty: 'medium',
@@ -908,7 +919,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I notice we keep coming back to this issue \u2014 what if we treated it as the real problem instead of a side note?",
-        conceptWords: ['pattern recognition', 'reframing', 'insight', 'questioning', 'focus'],
+        conceptWords: ['pattern recognition', 'reframing', 'focus'],
+        distractorWords: ['repetition', 'escalation', 'delegation'],
         explanation: 'Noticing recurring themes and surfacing them shows pattern recognition.',
       },
       difficulty: 'hard',
@@ -916,7 +928,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I'm asking everyone in this room to challenge the assumptions we've been making.",
-        conceptWords: ['critical thinking', 'assumptions', 'intellectual humility', 'curiosity', 'rigor'],
+        conceptWords: ['critical thinking', 'intellectual humility', 'rigor'],
+        distractorWords: ['compliance', 'brainstorming', 'authority'],
         explanation: 'Questioning assumptions is the hallmark of rigorous thinking.',
       },
       difficulty: 'hard',
@@ -924,7 +937,8 @@ async function seedWordGames() {
     {
       content: {
         message: "Here's the decision, here's why, and here's what we need from each of you going forward.",
-        conceptWords: ['clarity', 'alignment', 'direction', 'ownership', 'communication'],
+        conceptWords: ['clarity', 'direction', 'alignment'],
+        distractorWords: ['debate', 'consensus', 'autonomy'],
         explanation: 'Decision communication with rationale removes ambiguity.',
       },
       difficulty: 'hard',
@@ -932,7 +946,8 @@ async function seedWordGames() {
     {
       content: {
         message: "What would you do if you knew you couldn't fail?",
-        conceptWords: ['coaching', 'possibility', 'reframing', 'ambition', 'vision'],
+        conceptWords: ['coaching', 'possibility', 'vision'],
+        distractorWords: ['planning', 'caution', 'accountability'],
         explanation: 'A classic coaching question that removes fear as a constraint.',
       },
       difficulty: 'hard',
@@ -940,7 +955,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I hear the frustration \u2014 the system made this harder than it needed to be. Let's fix the system.",
-        conceptWords: ['empathy', 'systemic thinking', 'accountability', 'problem-solving', 'validation'],
+        conceptWords: ['empathy', 'systemic thinking', 'validation'],
+        distractorWords: ['blame', 'compliance', 'urgency'],
         explanation: 'Acknowledging frustration and redirecting it from blame to systemic improvement.',
       },
       difficulty: 'hard',
@@ -948,7 +964,8 @@ async function seedWordGames() {
     {
       content: {
         message: "We don't have to agree on everything, but we do have to commit to the decision we land on.",
-        conceptWords: ['alignment', 'commitment', 'trust', 'accountability', 'unity'],
+        conceptWords: ['alignment', 'commitment', 'unity'],
+        distractorWords: ['agreement', 'compromise', 'obedience'],
         explanation: 'This separates alignment from agreement.',
       },
       difficulty: 'hard',
@@ -956,7 +973,8 @@ async function seedWordGames() {
     {
       content: {
         message: 'I wanted to tell you directly rather than have you hear it from someone else.',
-        conceptWords: ['respect', 'directness', 'trust', 'transparency', 'honesty'],
+        conceptWords: ['respect', 'directness', 'transparency'],
+        distractorWords: ['confidentiality', 'urgency', 'formality'],
         explanation: 'Going direct shows deep respect and builds trust.',
       },
       difficulty: 'hard',
@@ -964,7 +982,8 @@ async function seedWordGames() {
     {
       content: {
         message: "What am I missing in how I'm thinking about this?",
-        conceptWords: ['intellectual humility', 'curiosity', 'openness', 'learning', 'self-awareness'],
+        conceptWords: ['intellectual humility', 'openness', 'self-awareness'],
+        distractorWords: ['indecision', 'deference', 'expertise'],
         explanation: 'Asking what you\'re missing is a powerful display of intellectual humility.',
       },
       difficulty: 'hard',
@@ -972,7 +991,8 @@ async function seedWordGames() {
     {
       content: {
         message: "I'm going to give you the honest version, because the polished version won't actually help you.",
-        conceptWords: ['candor', 'care', 'trust', 'directness', 'growth'],
+        conceptWords: ['candor', 'care', 'growth'],
+        distractorWords: ['harshness', 'politeness', 'authority'],
         explanation: 'This frames radical honesty as an act of care.',
       },
       difficulty: 'hard',

@@ -88,11 +88,13 @@ export default async function GamePage({ params }: Props) {
       const c = r.content as {
         message: string
         conceptWords: string[]
+        distractorWords?: string[]
         explanation: string
       }
       return {
         message: c.message,
         conceptWords: c.conceptWords,
+        distractorWords: c.distractorWords ?? [],
         explanation: c.explanation,
       }
     })

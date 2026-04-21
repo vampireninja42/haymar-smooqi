@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useMemo } from 'react'
 import { motion, AnimatePresence } from 'framer-motion'
 import { Button } from '@/components/ui/button'
 import { cn } from '@/lib/utils'
@@ -10,6 +10,7 @@ import { GameSummary } from './GameSummary'
 type WordSearchRound = {
   message: string
   conceptWords: string[]
+  distractorWords: string[]
   explanation: string
 }
 
@@ -26,7 +27,19 @@ export function WordSearch({ rounds }: WordSearchProps) {
   const [selectedWords, setSelectedWords] = useState<Set<number>>(new Set())
 
   const round = rounds[currentRound]
-  const conceptWords = round?.conceptWords ?? []
+
+  const allWords = useMemo(() => {
+    if (!round) return []
+    const combined = [
+      ...round.conceptWords.map((w) => ({ word: w, isCorrect: true })),
+      ...round.distractorWords.map((w) => ({ word: w, isCorrect: false })),
+    ]
+    for (let i = combined.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1))
+      ;[combined[i], combined[j]] = [combined[j], combined[i]]
+    }
+    return combined
+  }, [round])
 
   const toggleWord = useCallback(
     (index: number) => {
@@ -45,8 +58,13 @@ export function WordSearch({ rounds }: WordSearchProps) {
   )
 
   const handleSubmit = () => {
-    const allSelected = selectedWords.size === conceptWords.length
-    if (allSelected) {
+    const allConceptsSelected = allWords.every(
+      (w, i) => !w.isCorrect || selectedWords.has(i)
+    )
+    const noDistractorsSelected = Array.from(selectedWords).every(
+      (i) => allWords[i]?.isCorrect
+    )
+    if (allConceptsSelected && noDistractorsSelected) {
       setScore((s) => s + 1)
     }
     setPhase('feedback')
@@ -101,8 +119,21 @@ export function WordSearch({ rounds }: WordSearchProps) {
       </div>
 
       <div className="flex flex-wrap gap-2">
-        {conceptWords.map((word, i) => {
+        {allWords.map((w, i) => {
           const isSelected = selectedWords.has(i)
+
+          let feedbackClass = ''
+          if (phase === 'feedback') {
+            if (isSelected && w.isCorrect) {
+              feedbackClass = 'bg-green-100 border-green-400 text-green-800'
+            } else if (isSelected && !w.isCorrect) {
+              feedbackClass = 'bg-red-100 border-red-400 text-red-800'
+            } else if (!isSelected && w.isCorrect) {
+              feedbackClass = 'bg-yellow-50 border-yellow-300 text-yellow-800'
+            } else {
+              feedbackClass = 'bg-gray-50 border-gray-200 text-gray-400'
+            }
+          }
 
           return (
             <motion.button
@@ -113,9 +144,7 @@ export function WordSearch({ rounds }: WordSearchProps) {
               className={cn(
                 'px-4 py-2 rounded-lg border text-sm font-medium transition-all',
                 phase === 'feedback'
-                  ? isSelected
-                    ? 'bg-green-100 border-green-400 text-green-800'
-                    : 'bg-gray-50 border-gray-200 text-gray-400'
+                  ? feedbackClass
                   : isSelected
                     ? 'border-2 text-white'
                     : 'bg-white border-gray-200 text-gray-800 hover:border-gray-300 cursor-pointer'
@@ -129,7 +158,7 @@ export function WordSearch({ rounds }: WordSearchProps) {
                   : undefined
               }
             >
-              {word}
+              {w.word}
             </motion.button>
           )
         })}

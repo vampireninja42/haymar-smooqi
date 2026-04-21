@@ -16,9 +16,101 @@
 }
 .dark .bg-white { background-color: #1e1e1e !important; }
 .dark .text-gray-900 { color: #f5f5f5 !important; }
+.dark .text-gray-800 { color: #e8e8e8 !important; }
 .dark .text-gray-700 { color: #d1d1d1 !important; }
+.dark .text-gray-600 { color: #c0c0c0 !important; }
 .dark .text-gray-500 { color: #a0a0a0 !important; }
+.dark .text-gray-400 { color: #888 !important; }
+.dark .border-gray-100 { border-color: #2a2a2a !important; }
 .dark .border-gray-200 { border-color: #333 !important; }
+.dark .border-gray-300 { border-color: #555 !important; }
+
+/* Notification popover */
+.dark .notification-popover {
+  background-color: #2a2a2a !important;
+  border-color: #444 !important;
+}
+.dark .notification-popover p,
+.dark .notification-popover span {
+  color: #f0f0f0 !important;
+}
+.dark .notification-popover .text-gray-400 {
+  color: #a0a0a0 !important;
+}
+.dark .notification-popover .hover\:bg-gray-50:hover {
+  background-color: #333 !important;
+}
+.dark .notification-popover .border-b {
+  border-color: #444 !important;
+}
+
+/* Cards and containers */
+.dark .rounded-2xl,
+.dark .rounded-xl,
+.dark [class*="rounded-"][class*="bg-white"] {
+  background-color: #1e1e1e !important;
+}
+
+/* Form inputs */
+.dark input,
+.dark textarea,
+.dark select {
+  background-color: #2a2a2a !important;
+  border-color: #444 !important;
+  color: #f0f0f0 !important;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+  color: #777 !important;
+}
+
+/* Buttons and surfaces */
+.dark button.bg-white,
+.dark .bg-gray-50 { background-color: #2a2a2a !important; }
+.dark .bg-gray-100 { background-color: #333 !important; }
+.dark .hover\:bg-gray-50:hover { background-color: #2a2a2a !important; }
+.dark .hover\:bg-gray-100:hover { background-color: #333 !important; }
+
+/* Badges */
+.dark .bg-green-100 { background-color: #1a3a2a !important; }
+.dark .bg-blue-50 { background-color: #1a2a3a !important; }
+.dark .bg-red-50 { background-color: #3a1a1a !important; }
+.dark .bg-yellow-50 { background-color: #3a3a1a !important; }
+
+/* Sidebar/AppShell */
+.dark [style*="--sidebar-bg"] {
+  --sidebar-bg: rgba(20, 20, 20, 0.95) !important;
+}
+
+/* Progress bars */
+.dark .bg-gray-100.rounded-full { background-color: #333 !important; }
+
+/* Separator */
+.dark [role="separator"],
+.dark .border-t { border-color: #333 !important; }
+
+/* Sticky nav/header */
+.dark .bg-white\/90,
+.dark .backdrop-blur-sm.bg-white\/90 {
+  background-color: rgba(20, 20, 20, 0.92) !important;
+}
+
+/* Quiz explanation card */
+.dark .bg-blue-50.rounded-xl {
+  background-color: #1a2535 !important;
+  border-color: #2a4060 !important;
+}
+.dark .bg-blue-50 .text-gray-700 { color: #c8d8e8 !important; }
+
+/* Settings glass cards (override the lighter one above) */
+.dark .glass-card {
+  background: rgba(30, 30, 30, 0.92) !important;
+  border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+/* Muted foreground */
+.dark .text-muted-foreground { color: #a0a0a0 !important; }
+.dark .bg-muted\/30 { background-color: #1a1a1a !important; }
 
 @layer base {
   :root {

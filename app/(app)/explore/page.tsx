@@ -3,9 +3,8 @@ import Link from 'next/link'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
-import { CourseCard } from '@/components/course/CourseCard'
+import { CourseGrid } from '@/components/explore/CourseGrid'
 import { FilterButton } from '@/components/explore/FilterButton'
-import { LoadMoreButton } from '@/components/explore/LoadMoreButton'
 import { themeConfig } from '@/lib/theme'
 
 export const dynamic = 'force-dynamic'
@@ -19,7 +18,6 @@ interface ExplorePageProps {
     level?: string
     access?: string
     sort?: string
-    page?: string
   }>
 }
 
@@ -34,7 +32,6 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
   const levelFilter = params.level ?? ''
   const accessFilter = params.access ?? ''
   const sort = params.sort ?? 'popular'
-  const page = Math.max(1, parseInt(params.page ?? '1', 10))
 
   // Build where clause
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -62,7 +59,6 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
       where,
       include: { topic: true },
       orderBy,
-      skip: (page - 1) * ITEMS_PER_PAGE,
       take: ITEMS_PER_PAGE,
     }),
     prisma.course.count({ where }),
@@ -73,7 +69,26 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
   ])
 
   const savedIds = new Set(savedCourseRows.map((s) => s.courseId))
-  const hasMore = page * ITEMS_PER_PAGE < totalCount
+  const hasMore = courses.length < totalCount
+
+  const initialCourses = courses.map((course) => ({
+    id: course.id,
+    slug: course.slug,
+    title: course.title,
+    description: course.description,
+    level: course.level,
+    lessonCount: course.lessonCount,
+    estimatedMinutes: course.estimatedMinutes,
+    isFree: course.isFree,
+    topic: {
+      slug: course.topic.slug,
+      name: course.topic.name,
+      icon: course.topic.icon,
+    },
+    isSaved: savedIds.has(course.id),
+  }))
+
+  const filterParams = { q, topic: topicFilter, level: levelFilter, access: accessFilter, sort }
 
   // Helper for building filter URLs
   function filterUrl(overrides: Record<string, string>) {
@@ -206,39 +221,11 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
                 {totalCount} course{totalCount !== 1 ? 's' : ''}
               </p>
             )}
-            <div className="grid gap-3 grid-cols-1 sm:grid-cols-2">
-              {courses.map((course) => (
-                <CourseCard
-                  key={course.id}
-                  course={{
-                    id: course.id,
-                    slug: course.slug,
-                    title: course.title,
-                    description: course.description,
-                    level: course.level,
-                    lessonCount: course.lessonCount,
-                    estimatedMinutes: course.estimatedMinutes,
-                    isFree: course.isFree,
-                    topic: {
-                      slug: course.topic.slug,
-                      name: course.topic.name,
-                      icon: course.topic.icon,
-                    },
-                  }}
-                  isSaved={savedIds.has(course.id)}
-                />
-              ))}
-            </div>
-
-            {/* Load more */}
-            {hasMore && (
-              <div className="mt-6 text-center">
-                <LoadMoreButton
-                  href={filterUrl({ page: String(page + 1) })}
-                  variant={themeConfig.isVB ? 'vB' : 'vA'}
-                />
-              </div>
-            )}
+            <CourseGrid
+              initialCourses={initialCourses}
+              initialHasMore={hasMore}
+              filterParams={filterParams}
+            />
           </>
         )}
       </div>

@@ -55,7 +55,7 @@ export function NotificationPopover({ notifications }: NotificationPopoverProps)
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden"
+            className="notification-popover absolute right-0 top-full mt-2 w-64 rounded-xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden"
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <p className="text-sm font-semibold text-gray-900">Notifications</p>

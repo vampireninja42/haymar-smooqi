@@ -105,7 +105,7 @@ export default async function RootLayout({
       <head>
         <script
           dangerouslySetInnerHTML={{
-            __html: `try { var t = localStorage.getItem('smooqi-theme'); if (t === 'dark' || ((!t || t === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); } } catch(e) {}`,
+            __html: `try { if (localStorage.getItem('smooqi-theme') === 'dark') { document.documentElement.classList.add('dark'); } } catch(e) {}`,
           }}
         />
         <style dangerouslySetInnerHTML={{ __html: `

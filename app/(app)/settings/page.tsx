@@ -68,7 +68,7 @@ export default function SettingsPage() {
   // Theme
   const [themeColor, setThemeColor] = useState('purple')
   const [bgPattern, setBgPattern] = useState('solid')
-  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('system')
+  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('light')
 
   // Password
   const [currentPassword, setCurrentPassword] = useState('')
@@ -131,11 +131,7 @@ export default function SettingsPage() {
     } catch {
       // ignore
     }
-    const prefersDark =
-      typeof window !== 'undefined' &&
-      window.matchMedia('(prefers-color-scheme: dark)').matches
-    const useDark = mode === 'dark' || (mode === 'system' && prefersDark)
-    if (useDark) {
+    if (mode === 'dark') {
       document.documentElement.classList.add('dark')
     } else {
       document.documentElement.classList.remove('dark')
