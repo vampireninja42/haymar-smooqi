@@ -1,4 +1,5 @@
 import { prisma } from "@/lib/db"
+import { resetRateLimit } from "@/lib/rateLimit"
 import { NextResponse } from "next/server"
 import bcrypt from "bcryptjs"
 import { z } from "zod"
@@ -10,6 +11,12 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   try {
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown'
+    const { success } = await resetRateLimit.limit(`reset-use:${ip}`)
+    if (!success) {
+      return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 })
+    }
+
     const body = await req.json()
     const parsed = schema.safeParse(body)
     if (!parsed.success) {
