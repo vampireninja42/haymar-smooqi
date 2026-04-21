@@ -317,7 +317,7 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
                 initial="enter"
                 animate="center"
                 exit="exit"
-                transition={{ duration: 0.3, ease: 'easeInOut' }}
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
               >
                 {state.mode === 'audio' ? (
                   <AudioPlayer
