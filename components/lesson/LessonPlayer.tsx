@@ -431,55 +431,51 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
             </div>
           </main>
 
-          {/* Fixed bottom: toggle + prev/next */}
-          <div className="sticky bottom-0 z-10 bg-white/90 backdrop-blur-sm border-t border-gray-100">
-            <div className="max-w-[680px] mx-auto px-4 py-3">
-              <div className="flex justify-center mb-3">
-                <div className="flex bg-gray-100 rounded-full p-0.5">
-                  <button
-                    onClick={() => toggleMode('read')}
-                    className={cn(
-                      'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                      state.mode === 'read' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
-                    )}
-                  >
-                    Read
-                  </button>
-                  <button
-                    onClick={() => toggleMode('audio')}
-                    className={cn(
-                      'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                      state.mode === 'audio' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
-                    )}
-                  >
-                    Audio
-                  </button>
-                </div>
+          {/* Fixed bottom: single row — toggle left, nav right */}
+          <div className="sticky bottom-0 z-10 bg-white/90 backdrop-blur-sm border-t border-gray-100 safe-area-bottom">
+            <div className="max-w-[680px] mx-auto px-4 py-2 flex items-center justify-between gap-3">
+              <div className="flex bg-gray-100 rounded-full p-0.5 flex-shrink-0">
+                <button
+                  onClick={() => toggleMode('read')}
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                    state.mode === 'read' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                  )}
+                >
+                  Read
+                </button>
+                <button
+                  onClick={() => toggleMode('audio')}
+                  className={cn(
+                    'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                    state.mode === 'audio' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                  )}
+                >
+                  Audio
+                </button>
               </div>
 
-              {state.mode === 'read' && (
-                <div className="flex justify-between items-center gap-3">
-                  <Button
-                    variant="ghost"
-                    onClick={prevSlide}
-                    disabled={state.currentSlide === 0}
-                    className="text-gray-500 h-11"
-                  >
-                    &larr; Previous
-                  </Button>
-                  <Button
-                    onClick={nextSlide}
-                    className="h-11"
-                    style={{
-                      backgroundColor: 'var(--color-primary)',
-                      color: 'var(--color-primary-foreground)',
-                      borderRadius: 'var(--button-radius)',
-                    }}
-                  >
-                    {state.currentSlide === totalSlides - 1 ? 'Complete Lesson' : 'Next →'}
-                  </Button>
-                </div>
-              )}
+              <div className="flex items-center gap-2 flex-shrink-0">
+                <Button
+                  variant="ghost"
+                  onClick={prevSlide}
+                  disabled={state.currentSlide === 0}
+                  className="text-gray-500 h-9 px-3 text-sm"
+                >
+                  ← Prev
+                </Button>
+                <Button
+                  onClick={nextSlide}
+                  className="h-9 px-4 text-sm"
+                  style={{
+                    backgroundColor: 'var(--color-primary)',
+                    color: 'var(--color-primary-foreground)',
+                    borderRadius: 'var(--button-radius)',
+                  }}
+                >
+                  {state.currentSlide === totalSlides - 1 ? 'Finish' : 'Next →'}
+                </Button>
+              </div>
             </div>
           </div>
         </>
