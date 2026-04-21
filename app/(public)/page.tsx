@@ -1,3 +1,6 @@
+import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/db";
 import { themeConfig } from "@/lib/theme";
 import { HeroSection } from "@/components/marketing/HeroSection";
@@ -18,6 +21,11 @@ import { VbCta } from "@/components/marketing/vb/VbCta";
 export const dynamic = 'force-dynamic'
 
 export default async function MarketingHomePage() {
+  const session = await getServerSession(authOptions)
+  if (session?.user) {
+    redirect('/home')
+  }
+
   let learnerCount = 0
   try {
     learnerCount = await prisma.user.count()

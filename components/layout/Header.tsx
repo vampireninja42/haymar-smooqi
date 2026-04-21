@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { useEffect, useState } from "react";
 import { themeConfig } from "@/lib/theme";
 
-export function Header() {
+export function Header({ isLoggedIn }: { isLoggedIn?: boolean }) {
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -33,21 +33,33 @@ export function Header() {
         </Link>
 
         <div className="flex items-center gap-2">
-          <Button
-            variant="ghost"
-            size="sm"
-            asChild
-            style={isVB ? { color: "#57534E" } : undefined}
-          >
-            <Link href="/login">Login</Link>
-          </Button>
-          <Button
-            size="sm"
-            className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90 text-white rounded-[var(--button-radius)]"
-            asChild
-          >
-            <Link href="/signup">{isVB ? "Start Reading" : "Start Learning Free"}</Link>
-          </Button>
+          {isLoggedIn ? (
+            <Button
+              size="sm"
+              className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90 text-white rounded-[var(--button-radius)]"
+              asChild
+            >
+              <Link href="/home">Dashboard</Link>
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="ghost"
+                size="sm"
+                asChild
+                style={isVB ? { color: "#57534E" } : undefined}
+              >
+                <Link href="/login">Login</Link>
+              </Button>
+              <Button
+                size="sm"
+                className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90 text-white rounded-[var(--button-radius)]"
+                asChild
+              >
+                <Link href="/signup">{isVB ? "Start Reading" : "Start Learning Free"}</Link>
+              </Button>
+            </>
+          )}
         </div>
       </div>
     </header>
