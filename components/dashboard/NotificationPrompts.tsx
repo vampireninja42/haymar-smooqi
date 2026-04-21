@@ -174,7 +174,7 @@ export function NotificationPrompts({
 
             <div className="mt-3 flex justify-end">
               <Link
-                href="/support"
+                href="/feedback"
                 className="rounded-[var(--button-radius)] bg-[var(--color-primary)] px-4 py-2 text-sm font-semibold text-white"
               >
                 Rate Us

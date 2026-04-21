@@ -10,8 +10,11 @@ interface NotificationPopoverProps {
 
 export function NotificationPopover({ notifications }: NotificationPopoverProps) {
   const [open, setOpen] = useState(false)
+  const [dismissed, setDismissed] = useState(false)
   const ref = useRef<HTMLDivElement>(null)
   const hasReferral = notifications.some((n) => n.id === 'referral')
+  const capped = notifications.slice(0, 4)
+  const showDot = notifications.length > 0 && !dismissed
 
   useEffect(() => {
     function handleClick(e: MouseEvent) {
@@ -24,8 +27,11 @@ export function NotificationPopover({ notifications }: NotificationPopoverProps)
   }, [])
 
   useEffect(() => {
-    if (open && hasReferral) {
-      fetch('/api/user/notifications/clear-referral', { method: 'POST' }).catch(() => {})
+    if (open) {
+      setDismissed(true)
+      if (hasReferral) {
+        fetch('/api/user/notifications/clear-referral', { method: 'POST' }).catch(() => {})
+      }
     }
   }, [open, hasReferral])
 
@@ -37,7 +43,7 @@ export function NotificationPopover({ notifications }: NotificationPopoverProps)
         aria-label="Notifications"
       >
         <Bell className="h-5 w-5" />
-        {notifications.length > 0 && (
+        {showDot && (
           <span className="absolute top-1 right-1 h-2 w-2 rounded-full bg-[var(--color-primary)]" />
         )}
       </button>
@@ -49,7 +55,7 @@ export function NotificationPopover({ notifications }: NotificationPopoverProps)
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: -8, scale: 0.95 }}
             transition={{ duration: 0.15, ease: 'easeOut' }}
-            className="absolute right-0 top-full mt-2 w-80 rounded-2xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden"
+            className="absolute right-0 top-full mt-2 w-64 rounded-xl bg-white shadow-xl border border-gray-100 z-50 overflow-hidden"
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-gray-50">
               <p className="text-sm font-semibold text-gray-900">Notifications</p>
@@ -58,15 +64,15 @@ export function NotificationPopover({ notifications }: NotificationPopoverProps)
               </button>
             </div>
 
-            <div className="max-h-72 overflow-y-auto">
-              {notifications.length === 0 ? (
+            <div className="max-h-56 overflow-y-auto">
+              {capped.length === 0 ? (
                 <div className="px-4 py-8 text-center">
                   <p className="text-2xl mb-2">{'\uD83C\uDF89'}</p>
                   <p className="text-sm font-medium text-gray-900">All caught up!</p>
                   <p className="text-xs text-gray-400 mt-1">No new notifications</p>
                 </div>
               ) : (
-                notifications.map((n) => (
+                capped.map((n) => (
                   <div key={n.id} className="flex items-start gap-3 px-4 py-3 hover:bg-gray-50 transition-colors">
                     <span className="text-xl flex-shrink-0">{n.icon}</span>
                     <div className="flex-1 min-w-0">
