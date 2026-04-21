@@ -79,7 +79,8 @@ export function TopicSelector({ allTopics, selectedSlugs }: TopicSelectorProps) 
               animate={{ y: 0 }}
               exit={{ y: '100%' }}
               transition={{ type: 'spring', damping: 25, stiffness: 300 }}
-              className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto rounded-t-2xl bg-white shadow-xl"
+              className="fixed bottom-0 left-0 right-0 z-50 max-h-[80vh] overflow-y-auto overscroll-contain rounded-t-2xl bg-white shadow-xl"
+              style={{ WebkitOverflowScrolling: 'touch' }}
             >
               <div className="sticky top-0 z-10 flex items-center justify-between border-b border-gray-100 bg-white px-5 py-4">
                 <h2 className="text-lg font-bold text-gray-900">Select Topics</h2>

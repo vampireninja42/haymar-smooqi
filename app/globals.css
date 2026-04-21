@@ -6,6 +6,20 @@
   padding-bottom: env(safe-area-inset-bottom, 0px);
 }
 
+.dark body {
+  background: #0f0f0f !important;
+  color: #f5f5f5;
+}
+.dark .glass-card {
+  background: rgba(30, 30, 30, 0.85) !important;
+  border-color: rgba(255, 255, 255, 0.1) !important;
+}
+.dark .bg-white { background-color: #1e1e1e !important; }
+.dark .text-gray-900 { color: #f5f5f5 !important; }
+.dark .text-gray-700 { color: #d1d1d1 !important; }
+.dark .text-gray-500 { color: #a0a0a0 !important; }
+.dark .border-gray-200 { border-color: #333 !important; }
+
 @layer base {
   :root {
     /* iOS / Android safe area exposure */

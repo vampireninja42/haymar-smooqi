@@ -11,10 +11,10 @@ export function BackButton({ href, label }: BackButtonProps) {
   const router = useRouter()
 
   function handleBack() {
-    if (window.history.length > 1) {
-      router.back()
-    } else if (href) {
+    if (href) {
       router.push(href)
+    } else if (window.history.length > 1) {
+      router.back()
     } else {
       router.push('/home')
     }

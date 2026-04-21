@@ -115,7 +115,7 @@ export function WordSearch({ rounds }: WordSearchProps) {
                 phase === 'feedback'
                   ? isSelected
                     ? 'bg-green-100 border-green-400 text-green-800'
-                    : 'bg-gray-50 border-gray-200 text-gray-400'
+                    : 'bg-red-50 border-red-300 text-red-600'
                   : isSelected
                     ? 'border-2 text-white'
                     : 'bg-white border-gray-200 text-gray-800 hover:border-gray-300 cursor-pointer'

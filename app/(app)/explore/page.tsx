@@ -5,6 +5,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { CourseCard } from '@/components/course/CourseCard'
 import { FilterButton } from '@/components/explore/FilterButton'
+import { LoadMoreButton } from '@/components/explore/LoadMoreButton'
 import { themeConfig } from '@/lib/theme'
 
 export const dynamic = 'force-dynamic'
@@ -232,27 +233,10 @@ export default async function ExplorePage({ searchParams }: ExplorePageProps) {
             {/* Load more */}
             {hasMore && (
               <div className="mt-6 text-center">
-                {themeConfig.isVB ? (
-                  <Link
-                    href={filterUrl({ page: String(page + 1) })}
-                    className="inline-block px-6 py-2.5 text-sm font-medium border transition-colors"
-                    style={{
-                      borderColor: '#1A6B4A',
-                      color: '#1A6B4A',
-                      borderRadius: '8px',
-                      background: '#FFFFFF',
-                    }}
-                  >
-                    Load more
-                  </Link>
-                ) : (
-                  <Link
-                    href={filterUrl({ page: String(page + 1) })}
-                    className="inline-block rounded-[var(--button-radius)] border border-gray-200 bg-white px-6 py-2.5 text-sm font-medium text-gray-700 transition-colors hover:bg-gray-50"
-                  >
-                    Load More
-                  </Link>
-                )}
+                <LoadMoreButton
+                  href={filterUrl({ page: String(page + 1) })}
+                  variant={themeConfig.isVB ? 'vB' : 'vA'}
+                />
               </div>
             )}
           </>

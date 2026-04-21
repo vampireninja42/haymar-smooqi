@@ -103,6 +103,11 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${nunito.variable} ${playfair.variable}`}>
       <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `try { var t = localStorage.getItem('smooqi-theme'); if (t === 'dark' || ((!t || t === 'system') && window.matchMedia('(prefers-color-scheme: dark)').matches)) { document.documentElement.classList.add('dark'); } } catch(e) {}`,
+          }}
+        />
         <style dangerouslySetInnerHTML={{ __html: `
   :root { ${themeVars} --bg-pattern: none; --bg-pattern-size: auto; --font-playfair: 'Playfair Display', Georgia, serif; ${bgPatternCSS} }
   body { background: ${bodyBg} !important; min-height: 100vh; position: relative; }

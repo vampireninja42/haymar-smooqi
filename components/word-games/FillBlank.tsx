@@ -119,24 +119,24 @@ export function FillBlank({ rounds }: Props) {
             disabled={phase !== 'playing'}
             whileTap={phase === 'playing' ? { scale: 0.98 } : undefined}
             className={cn(
-              'w-full text-left p-4 rounded-xl border transition-all',
+              'w-full text-center p-4 rounded-xl border transition-all',
               getCardStyle(index)
             )}
           >
-            <div className="flex items-start gap-3">
-              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-600">
+            <div className="flex flex-col items-center gap-2">
+              <span className="w-7 h-7 rounded-full bg-gray-100 flex items-center justify-center text-xs font-semibold text-gray-600">
                 {LETTERS[index]}
               </span>
-              <span className="flex-1 text-gray-800 text-sm leading-relaxed">
+              <span className="text-gray-800 text-sm leading-relaxed">
                 {option}
               </span>
               {phase === 'feedback' && index === round.correctIndex && (
-                <span className="text-lg flex-shrink-0">&#x2705;</span>
+                <span className="text-lg">&#x2705;</span>
               )}
               {phase === 'feedback' &&
                 index === selected &&
                 index !== round.correctIndex && (
-                  <span className="text-lg flex-shrink-0">&#x274C;</span>
+                  <span className="text-lg">&#x274C;</span>
                 )}
             </div>
           </motion.button>

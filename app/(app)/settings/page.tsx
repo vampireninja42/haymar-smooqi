@@ -68,6 +68,7 @@ export default function SettingsPage() {
   // Theme
   const [themeColor, setThemeColor] = useState('purple')
   const [bgPattern, setBgPattern] = useState('solid')
+  const [themeMode, setThemeMode] = useState<'light' | 'dark' | 'system'>('system')
 
   // Password
   const [currentPassword, setCurrentPassword] = useState('')
@@ -109,7 +110,37 @@ export default function SettingsPage() {
       }
     }
     fetchSettings()
+    try {
+      const saved = localStorage.getItem('smooqi-theme') as
+        | 'light'
+        | 'dark'
+        | 'system'
+        | null
+      if (saved === 'light' || saved === 'dark' || saved === 'system') {
+        setThemeMode(saved)
+      }
+    } catch {
+      // ignore
+    }
   }, [])
+
+  function applyThemeMode(mode: 'light' | 'dark' | 'system') {
+    setThemeMode(mode)
+    try {
+      localStorage.setItem('smooqi-theme', mode)
+    } catch {
+      // ignore
+    }
+    const prefersDark =
+      typeof window !== 'undefined' &&
+      window.matchMedia('(prefers-color-scheme: dark)').matches
+    const useDark = mode === 'dark' || (mode === 'system' && prefersDark)
+    if (useDark) {
+      document.documentElement.classList.add('dark')
+    } else {
+      document.documentElement.classList.remove('dark')
+    }
+  }
 
   async function handleThemeColorChange(color: string) {
     setThemeColor(color)
@@ -266,6 +297,24 @@ export default function SettingsPage() {
           ))}
         </div>
 
+        <h3 className="mb-3 mt-5 text-sm font-semibold text-gray-700">Appearance</h3>
+        <div className="flex gap-2">
+          {(['light', 'dark', 'system'] as const).map((m) => (
+            <button
+              key={m}
+              onClick={() => applyThemeMode(m)}
+              className={cn(
+                'flex-1 rounded-lg border px-2 py-2 text-xs font-medium transition-colors capitalize',
+                themeMode === m
+                  ? 'border-[var(--color-primary)] bg-[var(--color-primary-light)] text-gray-900'
+                  : 'border-gray-200 bg-white text-gray-500 hover:bg-gray-50'
+              )}
+            >
+              {m}
+            </button>
+          ))}
+        </div>
+
         <p className="text-xs text-gray-400 mt-3">
           {'\uD83D\uDCA1'} Theme changes apply instantly.
         </p>
@@ -366,15 +415,15 @@ export default function SettingsPage() {
           themeConfig.isVA ? 'glass-card' : 'bg-white'
         }`}
       >
-        <div className="flex items-center justify-between">
-          <div>
+        <div className="flex items-center justify-between gap-4">
+          <div className="flex-1 min-w-0">
             <h3 className="text-sm font-semibold text-gray-700">Notifications</h3>
             <p className="text-xs text-gray-500">Receive learning reminders</p>
           </div>
           <button
             onClick={handleNotificationsToggle}
             className={cn(
-              'relative h-6 w-11 rounded-full transition-colors',
+              'flex-shrink-0 relative h-6 w-11 rounded-full transition-colors',
               notifications ? 'bg-[var(--color-primary)]' : 'bg-gray-300'
             )}
           >
