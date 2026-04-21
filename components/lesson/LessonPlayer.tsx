@@ -347,22 +347,65 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
   // ─── Slide animation variants ────────────────────────────────────
 
   const slideVariants = {
-    enter: (d: number) => ({ x: d > 0 ? '100%' : '-100%', opacity: 0 }),
+    enter: (d: number) => ({ x: d > 0 ? 300 : -300, opacity: 0 }),
     center: { x: 0, opacity: 1 },
-    exit: (d: number) => ({ x: d > 0 ? '-30%' : '30%', opacity: 0 }),
+    exit: (d: number) => ({ x: d > 0 ? -300 : 300, opacity: 0 }),
   }
 
   // ─── Render ──────────────────────────────────────────────────────
 
   return (
-    <div className="min-h-[100dvh] flex flex-col">
-      {/* ── Slides phase ── fixed top progress + title, scrollable middle, fixed bottom nav */}
-      {state.phase === 'slides' ? (
-        <>
-          {/* Fixed top: progress bar + lesson title */}
-          <div className="sticky top-0 z-10 bg-white/90 backdrop-blur-sm border-b border-gray-100">
-            <div className="max-w-[680px] mx-auto px-4 pt-3 pb-2">
-              <div className="h-1 bg-gray-100 rounded-full overflow-hidden mb-2">
+    <div className="min-h-screen flex flex-col">
+      <main
+        className="flex-1 px-4 py-6"
+        onTouchStart={handleTouchStart}
+        onTouchEnd={handleTouchEnd}
+      >
+        {state.phase === 'slides' && (
+          <div className="relative">
+            <AnimatePresence mode="wait" custom={direction} initial={false}>
+              <motion.div
+                key={state.currentSlide}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={{ duration: 0.25, ease: 'easeInOut' }}
+              >
+                {state.mode === 'audio' ? (
+                  <AudioPlayer
+                    text={slides[state.currentSlide].content}
+                    slide={slides[state.currentSlide]}
+                    onSlideComplete={nextSlide}
+                    isFirst={state.currentSlide === 0}
+                    isLast={state.currentSlide === slides.length - 1}
+                    topicIcon={lesson.course.topic.icon}
+                    lessonTitle={lesson.title}
+                    slideIndex={state.currentSlide}
+                    totalSlides={totalSlides}
+                    onBack={handleBackToCourse}
+                  />
+                ) : (
+                  <SlideView
+                    slide={slides[state.currentSlide]}
+                    mode="read"
+                    currentWordIndex={-1}
+                    isFirst={state.currentSlide === 0}
+                    isLast={state.currentSlide === slides.length - 1}
+                    topicIcon={lesson.course.topic.icon}
+                    lessonTitle={lesson.title}
+                    slideIndex={state.currentSlide}
+                    totalSlides={totalSlides}
+                    onBack={handleBackToCourse}
+                  />
+                )}
+              </motion.div>
+            </AnimatePresence>
+
+            {/* Progress bar */}
+            <div className="max-w-[680px] mx-auto mt-6">
+              <div className="h-1 bg-gray-100 rounded-full overflow-hidden">
                 <motion.div
                   className="h-full rounded-full"
                   style={{ backgroundColor: 'var(--color-primary)' }}
@@ -373,149 +416,93 @@ export function LessonPlayer({ lesson }: LessonPlayerProps) {
                   transition={{ duration: 0.3 }}
                 />
               </div>
-              <p className="text-xs font-medium text-gray-500 truncate">
-                {lesson.title}
-              </p>
             </div>
-          </div>
 
-          {/* Scrollable middle: slide content */}
-          <main
-            className="flex-1 px-4 py-4"
-            onTouchStart={handleTouchStart}
-            onTouchEnd={handleTouchEnd}
-          >
-            <div className="relative overflow-hidden">
-              <AnimatePresence mode="wait" custom={direction} initial={false}>
-                <motion.div
-                  key={state.currentSlide}
-                  custom={direction}
-                  variants={slideVariants}
-                  initial="enter"
-                  animate="center"
-                  exit="exit"
-                  transition={{
-                    x: { type: 'spring', stiffness: 220, damping: 28, mass: 0.6 },
-                    opacity: { duration: 0.15, ease: 'easeOut' },
-                  }}
-                >
-                  {state.mode === 'audio' ? (
-                    <AudioPlayer
-                      text={slides[state.currentSlide].content}
-                      slide={slides[state.currentSlide]}
-                      onSlideComplete={nextSlide}
-                      isFirst={state.currentSlide === 0}
-                      isLast={state.currentSlide === slides.length - 1}
-                      topicIcon={lesson.course.topic.icon}
-                      lessonTitle={lesson.title}
-                      slideIndex={state.currentSlide}
-                      totalSlides={totalSlides}
-                      onBack={handleBackToCourse}
-                    />
-                  ) : (
-                    <SlideView
-                      slide={slides[state.currentSlide]}
-                      mode="read"
-                      currentWordIndex={-1}
-                      isFirst={state.currentSlide === 0}
-                      isLast={state.currentSlide === slides.length - 1}
-                      topicIcon={lesson.course.topic.icon}
-                      lessonTitle={lesson.title}
-                      slideIndex={state.currentSlide}
-                      totalSlides={totalSlides}
-                      onBack={handleBackToCourse}
-                    />
-                  )}
-                </motion.div>
-              </AnimatePresence>
-            </div>
-          </main>
-
-          {/* Fixed bottom: single row — toggle left, nav right */}
-          <div className="sticky bottom-0 z-10 bg-white/90 backdrop-blur-sm border-t border-gray-100 safe-area-bottom">
-            <div className="max-w-[680px] mx-auto px-4 py-2 flex items-center justify-between gap-3">
-              <div className="flex bg-gray-100 rounded-full p-0.5 flex-shrink-0">
-                <button
-                  onClick={() => toggleMode('read')}
-                  className={cn(
-                    'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                    state.mode === 'read' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
-                  )}
-                >
-                  Read
-                </button>
-                <button
-                  onClick={() => toggleMode('audio')}
-                  className={cn(
-                    'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
-                    state.mode === 'audio' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
-                  )}
-                >
-                  Audio
-                </button>
+            {/* Toggle + Navigation */}
+            <div className="max-w-[680px] mx-auto mt-6">
+              <div className="flex justify-center mb-4">
+                <div className="flex bg-gray-100 rounded-full p-0.5">
+                  <button
+                    onClick={() => toggleMode('read')}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                      state.mode === 'read' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                    )}
+                  >
+                    Read
+                  </button>
+                  <button
+                    onClick={() => toggleMode('audio')}
+                    className={cn(
+                      'px-3 py-1.5 rounded-full text-xs font-medium transition-colors',
+                      state.mode === 'audio' ? 'bg-white shadow-sm text-gray-900' : 'text-gray-500'
+                    )}
+                  >
+                    Audio
+                  </button>
+                </div>
               </div>
 
-              <div className="flex items-center gap-2 flex-shrink-0">
-                <Button
-                  variant="ghost"
-                  onClick={prevSlide}
-                  disabled={state.currentSlide === 0}
-                  className="text-gray-500 h-9 px-3 text-sm"
-                >
-                  ← Prev
-                </Button>
-                <Button
-                  onClick={nextSlide}
-                  className="h-9 px-4 text-sm"
-                  style={{
-                    backgroundColor: 'var(--color-primary)',
-                    color: 'var(--color-primary-foreground)',
-                    borderRadius: 'var(--button-radius)',
-                  }}
-                >
-                  {state.currentSlide === totalSlides - 1 ? 'Finish' : 'Next →'}
-                </Button>
-              </div>
+              {state.mode === 'read' && (
+                <div className="flex justify-between">
+                  <Button
+                    variant="ghost"
+                    onClick={prevSlide}
+                    disabled={state.currentSlide === 0}
+                    className="text-gray-500"
+                  >
+                    &larr; Previous
+                  </Button>
+                  <Button
+                    onClick={nextSlide}
+                    style={{
+                      backgroundColor: 'var(--color-primary)',
+                      color: 'var(--color-primary-foreground)',
+                      borderRadius: 'var(--button-radius)',
+                    }}
+                  >
+                    {state.currentSlide === totalSlides - 1 ? 'Complete Lesson' : 'Next →'}
+                  </Button>
+                </div>
+              )}
             </div>
           </div>
-        </>
-      ) : (
-        <main className="flex-1 px-4 py-6">
-          {state.phase === 'complete' && (
-            <LessonComplete lessonTitle={lesson.title} onTakeQuiz={handleTakeQuiz} />
-          )}
+        )}
 
-          {state.phase === 'quiz' && (
-            <QuizQuestion
-              key={state.currentQuestion}
-              question={lesson.quizQuestions[state.currentQuestion]}
-              questionNumber={state.currentQuestion + 1}
-              totalQuestions={lesson.quizQuestions.length}
-              onAnswer={handleQuizAnswer}
-            />
-          )}
+        {state.phase === 'complete' && (
+          <LessonComplete lessonTitle={lesson.title} onTakeQuiz={handleTakeQuiz} />
+        )}
 
-          {state.phase === 'quiz-summary' && (
-            <QuizSummary
-              score={state.score}
-              totalQuestions={lesson.quizQuestions.length}
-              onNextLesson={handleNextLesson}
-              onBackToCourse={handleBackToCourse}
-              onTryAgain={handleTryAgain}
-              hasNextLesson={!!nextLesson}
-            />
-          )}
+        {state.phase === 'quiz' && (
+          <QuizQuestion
+            key={state.currentQuestion}
+            question={lesson.quizQuestions[state.currentQuestion]}
+            questionNumber={state.currentQuestion + 1}
+            totalQuestions={lesson.quizQuestions.length}
+            onAnswer={handleQuizAnswer}
+          />
+        )}
 
-          {state.phase === 'courseComplete' && (
-            <CourseComplete
-              courseName={lesson.course.title}
-              lessonCount={sortedCourseLessons.length}
-              xpEarned={50}
-              onContinue={handleBackToCourse}
-            />
-          )}
-        </main>
-      )}
+        {state.phase === 'quiz-summary' && (
+          <QuizSummary
+            score={state.score}
+            totalQuestions={lesson.quizQuestions.length}
+            onNextLesson={handleNextLesson}
+            onBackToCourse={handleBackToCourse}
+            onTryAgain={handleTryAgain}
+            hasNextLesson={!!nextLesson}
+          />
+        )}
+
+        {state.phase === 'courseComplete' && (
+          <CourseComplete
+            courseName={lesson.course.title}
+            lessonCount={sortedCourseLessons.length}
+            xpEarned={50}
+            onContinue={handleBackToCourse}
+          />
+        )}
+      </main>
     </div>
   )
 }

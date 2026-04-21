@@ -235,7 +235,7 @@ export function SlideView({ slide, mode, currentWordIndex, isFirst, isLast, topi
     <Card
       className={cn(
         'max-w-[680px] mx-auto bg-white',
-        'p-4 sm:p-8',
+        'p-8',
         themeConfig.isVA
           ? 'rounded-[16px] shadow-lg border-0'
           : 'rounded-[12px] border'

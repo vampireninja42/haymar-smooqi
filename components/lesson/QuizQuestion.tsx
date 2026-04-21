@@ -199,44 +199,25 @@ export function QuizQuestion({
       <div className="space-y-3">
         {shuffled.entries.map(({ text }, index) => {
           const key = OPTION_KEYS[index]
-          const isCorrectKey = key === correctKey
-          const isWrongSelection = key === selected && !isCorrectKey
-          const badgeBg = showFeedback
-            ? isCorrectKey
-              ? '#DCFCE7'
-              : isWrongSelection
-                ? '#FEE2E2'
-                : '#F3F4F6'
-            : '#F3F4F6'
-          const badgeColor = showFeedback
-            ? isCorrectKey
-              ? '#15803D'
-              : isWrongSelection
-                ? '#DC2626'
-                : '#4B5563'
-            : '#4B5563'
           return (
             <button
               key={key}
               onClick={() => handleSelect(key)}
               disabled={showFeedback}
               className={cn(
-                'w-full text-left p-4 rounded-xl transition-all flex items-center gap-3 border',
+                'w-full text-left p-4 rounded-xl transition-all flex items-center gap-3',
                 getOptionStyles(key)
               )}
             >
-              <span
-                className="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold"
-                style={{ backgroundColor: badgeBg, color: badgeColor }}
-              >
+              <span className="flex-shrink-0 w-8 h-8 rounded-full bg-gray-100 flex items-center justify-center text-sm font-semibold text-gray-600">
                 {key}
               </span>
-              <span className="flex-1 text-sm text-gray-800 leading-relaxed">{text}</span>
-              {showFeedback && isCorrectKey && (
-                <span className="text-base flex-shrink-0">&#x2705;</span>
+              <span className="flex-1 text-gray-800">{text}</span>
+              {showFeedback && key === correctKey && (
+                <span className="text-lg">&#x2705;</span>
               )}
-              {showFeedback && isWrongSelection && (
-                <span className="text-base flex-shrink-0">&#x274C;</span>
+              {showFeedback && key === selected && key !== correctKey && (
+                <span className="text-lg">&#x274C;</span>
               )}
             </button>
           )
