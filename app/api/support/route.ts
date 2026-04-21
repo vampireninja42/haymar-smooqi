@@ -3,6 +3,7 @@ import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
 import { NextResponse } from 'next/server'
 import { z } from 'zod'
+import { Resend } from 'resend'
 
 const schema = z.object({
   issueType: z.string().min(1),
@@ -33,7 +34,22 @@ export async function POST(req: Request) {
       },
     })
 
-    // TODO: Send confirmation email via Resend
+    try {
+      const resend = new Resend(process.env.RESEND_API_KEY)
+      await resend.emails.send({
+        from: 'Smooqi Support <support@haymar.ai>',
+        to: email,
+        subject: `We received your message: ${subject}`,
+        html: `
+          <p>Hi,</p>
+          <p>Thanks for reaching out. We received your support request and will get back to you within 24 hours.</p>
+          <p><strong>Your message:</strong><br/>${description}</p>
+          <p>— The Smooqi Team</p>
+        `,
+      })
+    } catch (err) {
+      console.error('[Support] Confirmation email failed:', err)
+    }
 
     return NextResponse.json({ success: true })
   } catch {

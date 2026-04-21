@@ -65,30 +65,42 @@ const plans = [
 export function PricingCards() {
   const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
+  const [message, setMessage] = useState<string | null>(null)
 
   async function handleCheckout(plan: 'monthly' | 'annual') {
     setLoading(plan)
+    setMessage(null)
     try {
       const res = await fetch('/api/stripe/create-session', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ plan }),
       })
+      if (res.status === 503) {
+        setMessage('Payments coming soon — check back shortly!')
+        return
+      }
       const data = await res.json()
       if (data.url) {
         window.location.href = data.url
-      } else {
-        router.push('/login')
+        return
       }
+      setMessage('Unable to start checkout. Please try again.')
     } catch {
-      router.push('/login')
+      setMessage('Unable to start checkout. Please try again.')
     } finally {
       setLoading(null)
     }
   }
 
   return (
-    <div className="mt-12 grid gap-6 md:grid-cols-3">
+    <div className="mt-12">
+      {message && (
+        <div className="mb-6 p-4 rounded-xl bg-amber-50 border border-amber-200 text-sm text-amber-800 text-center">
+          {message}
+        </div>
+      )}
+      <div className="grid gap-6 md:grid-cols-3">
       {plans.map((p) => (
         <Card
           key={p.name}
@@ -150,6 +162,7 @@ export function PricingCards() {
           </CardContent>
         </Card>
       ))}
+      </div>
     </div>
   )
 }

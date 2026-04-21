@@ -20,6 +20,7 @@ const playfair = Playfair_Display({
 export const metadata: Metadata = {
   title: 'Smooqi — Learn Anything, One Lesson at a Time',
   description: 'One lesson a day across 195+ topics. Build real knowledge, one bite at a time.',
+  icons: { icon: '/icon' },
 }
 
 export const viewport: Viewport = {

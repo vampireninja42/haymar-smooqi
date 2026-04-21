@@ -9,11 +9,17 @@ type ActionType = 'upgrade' | 'manage' | 'resubscribe'
 export function SubscriptionActions({ action }: { action: ActionType }) {
   const router = useRouter()
   const [loading, setLoading] = useState(false)
+  const [message, setMessage] = useState<string | null>(null)
 
   async function handleManage() {
     setLoading(true)
+    setMessage(null)
     try {
       const res = await fetch('/api/stripe/portal', { method: 'POST' })
+      if (res.status === 503) {
+        setMessage('Payment portal coming soon.')
+        return
+      }
       if (res.ok) {
         const data = await res.json()
         if (data.url) {
@@ -21,8 +27,9 @@ export function SubscriptionActions({ action }: { action: ActionType }) {
           return
         }
       }
+      setMessage('Unable to open billing portal. Please try again.')
     } catch {
-      // ignore
+      setMessage('Unable to open billing portal. Please try again.')
     } finally {
       setLoading(false)
     }
@@ -41,34 +48,40 @@ export function SubscriptionActions({ action }: { action: ActionType }) {
 
   if (action === 'manage') {
     return (
-      <Button
-        onClick={handleManage}
-        disabled={loading}
-        variant="outline"
-        className="mt-4 rounded-[var(--button-radius)]"
-      >
-        {loading ? 'Loading...' : 'Manage Subscription'}
-      </Button>
+      <div>
+        <Button
+          onClick={handleManage}
+          disabled={loading}
+          variant="outline"
+          className="mt-4 rounded-[var(--button-radius)]"
+        >
+          {loading ? 'Loading...' : 'Manage Subscription'}
+        </Button>
+        {message && <p className="mt-2 text-sm text-gray-600">{message}</p>}
+      </div>
     )
   }
 
   if (action === 'resubscribe') {
     return (
-      <div className="mt-4 flex gap-3">
-        <Button
-          onClick={() => router.push('/pricing')}
-          className="rounded-[var(--button-radius)]"
-        >
-          Resubscribe
-        </Button>
-        <Button
-          onClick={handleManage}
-          disabled={loading}
-          variant="outline"
-          className="rounded-[var(--button-radius)]"
-        >
-          {loading ? 'Loading...' : 'Manage Billing'}
-        </Button>
+      <div>
+        <div className="mt-4 flex gap-3">
+          <Button
+            onClick={() => router.push('/pricing')}
+            className="rounded-[var(--button-radius)]"
+          >
+            Resubscribe
+          </Button>
+          <Button
+            onClick={handleManage}
+            disabled={loading}
+            variant="outline"
+            className="rounded-[var(--button-radius)]"
+          >
+            {loading ? 'Loading...' : 'Manage Billing'}
+          </Button>
+        </div>
+        {message && <p className="mt-2 text-sm text-gray-600">{message}</p>}
       </div>
     )
   }
