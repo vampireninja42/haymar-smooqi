@@ -199,25 +199,36 @@ export default async function TopicPage({ params }: TopicPageProps) {
             return (
               <div
                 key={course.id}
-                className="rounded-[var(--card-radius)] bg-white p-4 shadow-sm"
+                className={`rounded-[var(--card-radius)] p-4 shadow-sm border-l-4 ${
+                  isCompleted
+                    ? 'bg-green-50 border-green-400'
+                    : 'bg-white border-transparent'
+                }`}
               >
                 <div className="flex items-start gap-3">
                   <span
-                    className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold"
+                    className="flex h-8 w-8 items-center justify-center rounded-full text-sm font-bold flex-shrink-0"
                     style={{
                       backgroundColor: isCompleted ? '#D1FAE5' : colors.bg,
                       color: isCompleted ? '#059669' : colors.text,
                     }}
                   >
-                    {isCompleted ? '\u2713' : idx + 1}
+                    {isCompleted ? '✓' : idx + 1}
                   </span>
                   <div className="flex-1 min-w-0">
-                    <Link
-                      href={`/learn/${course.slug}`}
-                      className="text-sm font-semibold text-gray-900 hover:text-[var(--color-primary)]"
-                    >
-                      {course.title}
-                    </Link>
+                    <div className="flex items-center gap-2 flex-wrap">
+                      <Link
+                        href={`/learn/${course.slug}`}
+                        className="text-sm font-semibold text-gray-900 hover:text-[var(--color-primary)]"
+                      >
+                        {course.title}
+                      </Link>
+                      {isCompleted && (
+                        <span className="rounded-full bg-green-100 px-2 py-0.5 text-[10px] font-semibold text-green-700">
+                          Completed
+                        </span>
+                      )}
+                    </div>
                     <div className="mt-1 flex items-center gap-3 text-xs text-gray-400">
                       <span>{course.lessonCount} lessons</span>
                       <span>{course.estimatedMinutes} min</span>
