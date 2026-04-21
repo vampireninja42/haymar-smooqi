@@ -17,6 +17,9 @@ const schema = z.object({
 })
 
 export async function POST(req: Request) {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ error: 'Payments not configured' }, { status: 503 })
+  }
   const stripe = getStripe()
   try {
     const session = await getServerSession(authOptions)

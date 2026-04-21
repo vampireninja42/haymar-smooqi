@@ -12,6 +12,9 @@ function getStripe() {
 }
 
 export async function POST() {
+  if (!process.env.STRIPE_SECRET_KEY) {
+    return NextResponse.json({ error: 'Payments not configured' }, { status: 503 })
+  }
   const stripe = getStripe()
   try {
     const session = await getServerSession(authOptions)
