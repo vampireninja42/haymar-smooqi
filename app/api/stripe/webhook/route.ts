@@ -1,4 +1,5 @@
 import { prisma } from '@/lib/db'
+import { redis } from '@/lib/redis'
 import { NextResponse } from 'next/server'
 import Stripe from 'stripe'
 
@@ -29,6 +30,14 @@ export async function POST(req: Request) {
   } catch {
     return NextResponse.json({ error: 'Invalid signature' }, { status: 400 })
   }
+
+  // Idempotency: skip already-processed events
+  const eventId = event.id
+  const existing = await redis.get(`stripe:event:${eventId}`)
+  if (existing) {
+    return NextResponse.json({ received: true, duplicate: true }, { status: 200 })
+  }
+  await redis.set(`stripe:event:${eventId}`, '1', { ex: 60 * 60 * 24 * 3 })
 
   try {
     switch (event.type) {

@@ -5,6 +5,9 @@ import { getThemeCSSVars } from '@/lib/theme'
 import { getServerSession } from 'next-auth'
 import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/db'
+import { validateEnv } from '@/lib/env'
+
+validateEnv()
 
 const inter = Inter({ subsets: ['latin'], variable: '--font-inter' })
 const nunito = Nunito({ subsets: ['latin'], variable: '--font-nunito' })

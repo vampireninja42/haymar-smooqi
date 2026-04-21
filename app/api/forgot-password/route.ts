@@ -2,7 +2,7 @@ import { prisma } from "@/lib/db"
 import { NextResponse } from "next/server"
 import { z } from "zod"
 import { Resend } from "resend"
-import { rateLimit } from "@/lib/rateLimit"
+import { resetRateLimit } from "@/lib/rateLimit"
 
 const schema = z.object({
   email: z.string().email(),
@@ -10,8 +10,8 @@ const schema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get('x-forwarded-for') ?? 'unknown'
-    const { allowed } = rateLimit(`forgot:${ip}`, 3, 15 * 60 * 1000)
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown'
+    const { success: allowed } = await resetRateLimit.limit(ip)
     if (!allowed) {
       // Return success to prevent enumeration / probing
       return NextResponse.json({ success: true })

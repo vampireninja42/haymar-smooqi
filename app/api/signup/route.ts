@@ -1,6 +1,6 @@
 import { prisma } from '@/lib/db'
 import { generateReferralCode } from '@/lib/utils'
-import { rateLimit } from '@/lib/rateLimit'
+import { signupRateLimit } from '@/lib/rateLimit'
 import bcrypt from 'bcryptjs'
 import { z } from 'zod'
 import { NextResponse } from 'next/server'
@@ -14,10 +14,10 @@ const signupSchema = z.object({
 
 export async function POST(req: Request) {
   try {
-    const ip = req.headers.get('x-forwarded-for') ?? 'unknown'
-    const { allowed } = rateLimit(`signup:${ip}`, 5, 60 * 60 * 1000)
-    if (!allowed) {
-      return NextResponse.json({ error: 'Too many requests' }, { status: 429 })
+    const ip = req.headers.get('x-forwarded-for')?.split(',')[0] ?? 'unknown'
+    const { success } = await signupRateLimit.limit(ip)
+    if (!success) {
+      return NextResponse.json({ error: 'Too many requests. Try again later.' }, { status: 429 })
     }
 
     const body = await req.json()
