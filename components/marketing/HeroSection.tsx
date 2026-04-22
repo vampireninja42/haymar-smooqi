@@ -29,7 +29,7 @@ export function HeroSection() {
 
             <div className="mt-8 flex flex-wrap gap-4">
               <Button size="lg" className="bg-[var(--color-primary)] hover:bg-[var(--color-primary)]/90 text-white rounded-[var(--button-radius)]" asChild>
-                <Link href="/signup">Start Learning for Free</Link>
+                <Link href="/signup">Start Your Free Trial</Link>
               </Button>
               <Button
                 variant="ghost"

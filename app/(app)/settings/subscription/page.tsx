@@ -76,12 +76,11 @@ export default async function SubscriptionPage({
           <>
             <div className="flex items-center gap-3">
               <Badge className="bg-gray-100 text-gray-600 border-0">
-                Free Plan
+                Trial Expired
               </Badge>
             </div>
             <p className="mt-3 text-sm text-gray-600">
-              You are on the free plan. Upgrade to Premium to unlock all courses,
-              advanced quizzes, and more.
+              Your free trial has ended. Subscribe to continue learning.
             </p>
             <SubscriptionActions action="upgrade" />
           </>

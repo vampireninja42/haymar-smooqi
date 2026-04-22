@@ -56,10 +56,8 @@ export async function POST(req: Request) {
         passwordHash,
         referralCode: generateReferralCode(),
         referredById,
-        ...(referredById ? {
-          subscriptionStatus: 'trialing',
-          trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
-        } : {}),
+        subscriptionStatus: 'trialing',
+        trialEndsAt: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       },
     })
 

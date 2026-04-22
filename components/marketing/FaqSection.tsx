@@ -10,9 +10,9 @@ import {
 
 const faqs = [
   {
-    question: "Is it really free?",
+    question: "Do I need a credit card to start?",
     answer:
-      "Yes! The free plan gives you access to beginner courses, XP tracking, streaks, achievements, and the leaderboard — forever. No credit card required. Premium unlocks full course access, audio mode, word games, and detailed progress reports.",
+      "No credit card required to start your 7-day free trial. You'll get full access to everything — all courses, audio mode, word games, achievements, and progress tracking. After your trial, choose a monthly or annual plan to continue.",
   },
   {
     question: "How long are the lessons?",

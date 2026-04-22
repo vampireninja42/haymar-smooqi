@@ -29,7 +29,7 @@ export function VbCta() {
           className="mx-auto mt-5 max-w-xl text-lg"
           style={{ color: "rgba(255,255,255,0.8)", lineHeight: 1.6 }}
         >
-          Join thousands of curious minds. One lesson a day. Free to start.
+          Join thousands of curious minds. One lesson a day. 7-day free trial.
         </p>
 
         <div className="mt-10">
@@ -38,7 +38,7 @@ export function VbCta() {
             className="inline-block rounded-[8px] px-10 py-4 text-base font-semibold transition-opacity hover:opacity-90"
             style={{ background: "#FFFFFF", color: "#1A6B4A" }}
           >
-            Start for Free
+            Start Free Trial
           </Link>
         </div>
 

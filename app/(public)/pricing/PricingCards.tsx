@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
@@ -9,34 +8,20 @@ import { cn } from '@/lib/utils'
 
 const plans = [
   {
-    name: 'Free',
-    price: '$0',
-    period: 'forever',
-    description: 'Perfect for getting started',
-    accent: 'border-gray-200',
-    buttonVariant: 'outline' as const,
-    buttonLabel: 'Get Started',
-    href: '/signup',
-    features: [
-      'Access to beginner courses',
-      'XP & leveling system',
-      'Daily streaks',
-      'Word games',
-      'Community leaderboard',
-    ],
-  },
-  {
     name: 'Monthly',
     price: '$9.99',
     period: '/month',
-    description: 'Full access, cancel anytime',
+    description: '7-day free trial, then $9.99/month',
     accent: 'border-purple-300',
     buttonVariant: 'default' as const,
-    buttonLabel: 'Start Free Trial',
+    buttonLabel: 'Start 7-Day Free Trial',
     plan: 'monthly' as const,
     features: [
-      'Everything in Free',
-      'All intermediate & advanced courses',
+      'All courses — beginner through advanced',
+      'XP & leveling system',
+      'Daily streaks & challenges',
+      'Word games',
+      'Community leaderboard',
       'Spaced repetition reviews',
       'Priority support',
       'Ad-free experience',
@@ -46,10 +31,10 @@ const plans = [
     name: 'Annual',
     price: '$59.99',
     period: '/year',
-    description: 'Best value for committed learners',
+    description: '7-day free trial, then $59.99/year',
     accent: 'border-purple-500 ring-2 ring-purple-500/20',
     buttonVariant: 'default' as const,
-    buttonLabel: 'Start Free Trial',
+    buttonLabel: 'Start 7-Day Free Trial',
     plan: 'annual' as const,
     popular: true,
     features: [
@@ -63,7 +48,6 @@ const plans = [
 ]
 
 export function PricingCards() {
-  const router = useRouter()
   const [loading, setLoading] = useState<string | null>(null)
   const [message, setMessage] = useState<string | null>(null)
 
@@ -100,7 +84,7 @@ export function PricingCards() {
           {message}
         </div>
       )}
-      <div className="grid gap-6 md:grid-cols-3">
+      <div className="grid gap-6 md:grid-cols-2 max-w-3xl mx-auto">
       {plans.map((p) => (
         <Card
           key={p.name}
@@ -140,24 +124,14 @@ export function PricingCards() {
               ))}
             </ul>
             <div className="mt-6">
-              {p.plan ? (
-                <Button
-                  variant={p.buttonVariant}
-                  className="w-full rounded-full"
-                  disabled={loading !== null}
-                  onClick={() => handleCheckout(p.plan!)}
-                >
-                  {loading === p.plan ? 'Redirecting...' : p.buttonLabel}
-                </Button>
-              ) : (
-                <Button
-                  variant={p.buttonVariant}
-                  className="w-full rounded-full"
-                  onClick={() => router.push(p.href!)}
-                >
-                  {p.buttonLabel}
-                </Button>
-              )}
+              <Button
+                variant={p.buttonVariant}
+                className="w-full rounded-full"
+                disabled={loading !== null}
+                onClick={() => handleCheckout(p.plan)}
+              >
+                {loading === p.plan ? 'Redirecting...' : p.buttonLabel}
+              </Button>
             </div>
           </CardContent>
         </Card>

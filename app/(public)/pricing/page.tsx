@@ -8,7 +8,7 @@ export default function PricingPage() {
           Simple, Transparent Pricing
         </h1>
         <p className="mt-3 text-lg text-gray-500">
-          Start free. Upgrade when you&apos;re ready.
+          Try free for 7 days. No credit card required.
         </p>
       </div>
 
