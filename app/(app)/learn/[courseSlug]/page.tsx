@@ -6,6 +6,7 @@ import { CourseOverview } from '@/components/lesson/CourseOverview'
 import { VbCourseOverview } from '@/components/lesson/VbCourseOverview'
 import { BackButton } from '@/components/ui/BackButton'
 import { themeConfig } from '@/lib/theme'
+import { isPremium } from '@/lib/subscription'
 
 export default async function CoursePage({ params }: { params: { courseSlug: string } }) {
   const session = await getServerSession(authOptions)
@@ -29,10 +30,10 @@ export default async function CoursePage({ params }: { params: { courseSlug: str
   // Get user subscription status
   const user = await prisma.user.findUnique({
     where: { id: session.user.id },
-    select: { subscriptionStatus: true },
+    select: { subscriptionStatus: true, trialEndsAt: true },
   })
 
-  const isPremium = user?.subscriptionStatus === 'active' || user?.subscriptionStatus === 'trialing'
+  const userIsPremium = user ? isPremium(user) : false
 
   // Transform progress into Record<lessonId, { lessonCompleted, quizPassed }>
   const progress: Record<string, { lessonCompleted: boolean; quizPassed: boolean }> = {}
@@ -52,13 +53,13 @@ export default async function CoursePage({ params }: { params: { courseSlug: str
         <VbCourseOverview
           course={course}
           progress={progress}
-          isUserFree={!isPremium}
+          isUserFree={!userIsPremium}
         />
       ) : (
         <CourseOverview
           course={course}
           progress={progress}
-          isUserFree={!isPremium}
+          isUserFree={!userIsPremium}
         />
       )}
     </>

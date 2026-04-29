@@ -120,6 +120,16 @@ async function main() {
 
       // Replace quiz questions: delete existing, insert fresh
       if (lesson.quizQuestions?.length) {
+        // Delete DailyChallenges referencing these questions first (FK constraint)
+        const existingQIds = await prisma.quizQuestion.findMany({
+          where: { lessonId: dbLesson.id },
+          select: { id: true },
+        })
+        if (existingQIds.length) {
+          const ids = existingQIds.map((q: { id: string }) => q.id)
+          await prisma.userDailyChallenge.deleteMany({ where: { challenge: { questionId: { in: ids } } } })
+          await prisma.dailyChallenge.deleteMany({ where: { questionId: { in: ids } } })
+        }
         await prisma.quizQuestion.deleteMany({ where: { lessonId: dbLesson.id } })
         await prisma.quizQuestion.createMany({
           data: lesson.quizQuestions.map((q, qi) => ({

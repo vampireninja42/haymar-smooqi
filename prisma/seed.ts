@@ -193,24 +193,24 @@ async function seedCourses() {
     // Psychology & Mindset (3)
     { topicSlug: 'psychology-mindset', slug: 'understanding-your-mind', title: 'Understanding Your Mind', description: 'Explore the basics of how your brain processes information, forms habits, and shapes your reality.', level: 'beginner', isFree: true, sortOrder: 1 },
     { topicSlug: 'psychology-mindset', slug: 'emotional-intelligence', title: 'Emotional Intelligence', description: 'Develop the ability to recognize, understand, and manage your emotions and those of others.', level: 'intermediate', isFree: false, sortOrder: 2 },
-    { topicSlug: 'psychology-mindset', slug: 'habit-behavior-change', title: 'Habit & Behavior Change', description: 'Use science-backed strategies to break bad habits, build good ones, and create lasting behavioral change.', level: 'advanced', isFree: false, sortOrder: 3 },
+    { topicSlug: 'psychology-mindset', slug: 'habit-and-behavior-change', title: 'Habit & Behavior Change', description: 'Use science-backed strategies to break bad habits, build good ones, and create lasting behavioral change.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Personal Finance (4)
     { topicSlug: 'personal-finance', slug: 'money-basics', title: 'Money Basics', description: 'Build a solid financial foundation with budgeting, saving, and understanding how money works.', level: 'beginner', isFree: true, sortOrder: 1 },
     { topicSlug: 'personal-finance', slug: 'smart-investing', title: 'Smart Investing', description: 'Learn the principles of investing, from index funds to diversification, and grow your wealth over time.', level: 'intermediate', isFree: false, sortOrder: 2 },
-    { topicSlug: 'personal-finance', slug: 'credit-debt-mastery', title: 'Credit & Debt Mastery', description: 'Understand credit scores, manage debt strategically, and use credit as a tool rather than a trap.', level: 'intermediate', isFree: false, sortOrder: 3 },
+    { topicSlug: 'personal-finance', slug: 'credit-and-debt-mastery', title: 'Credit & Debt Mastery', description: 'Understand credit scores, manage debt strategically, and use credit as a tool rather than a trap.', level: 'intermediate', isFree: false, sortOrder: 3 },
     { topicSlug: 'personal-finance', slug: 'financial-freedom', title: 'Financial Freedom', description: 'Design a long-term financial plan that builds passive income and moves you toward true financial independence.', level: 'advanced', isFree: false, sortOrder: 4 },
 
     // Philosophy (3)
     { topicSlug: 'philosophy', slug: 'great-thinkers', title: 'Great Thinkers', description: 'Journey through the ideas of history\'s most influential philosophers, from Socrates to modern thinkers.', level: 'beginner', isFree: true, sortOrder: 1 },
-    { topicSlug: 'philosophy', slug: 'ethics-morality', title: 'Ethics & Morality', description: 'Examine the frameworks that guide right and wrong, from utilitarianism to virtue ethics and beyond.', level: 'intermediate', isFree: false, sortOrder: 2 },
+    { topicSlug: 'philosophy', slug: 'ethics-and-morality', title: 'Ethics & Morality', description: 'Examine the frameworks that guide right and wrong, from utilitarianism to virtue ethics and beyond.', level: 'intermediate', isFree: false, sortOrder: 2 },
     { topicSlug: 'philosophy', slug: 'eastern-philosophy', title: 'Eastern Philosophy', description: 'Discover the wisdom of Eastern traditions including Buddhism, Taoism, and Confucianism.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Art & Culture (4)
     { topicSlug: 'art-culture', slug: 'art-history-essentials', title: 'Art History Essentials', description: 'Trace the evolution of art from ancient cave paintings to Renaissance masterpieces and modern movements.', level: 'beginner', isFree: true, sortOrder: 1 },
     { topicSlug: 'art-culture', slug: 'understanding-modern-art', title: 'Understanding Modern Art', description: 'Decode the movements, meaning, and methods behind modern and contemporary art.', level: 'intermediate', isFree: false, sortOrder: 2 },
     { topicSlug: 'art-culture', slug: 'art-appreciation-skills', title: 'Art Appreciation Skills', description: 'Develop a trained eye for composition, technique, and meaning in any work of art you encounter.', level: 'advanced', isFree: false, sortOrder: 3 },
-    { topicSlug: 'art-culture', slug: 'digital-art-design', title: 'Digital Art & Design', description: 'Explore the intersection of technology and creativity in digital illustration, design, and visual media.', level: 'intermediate', isFree: false, sortOrder: 4 },
+    { topicSlug: 'art-culture', slug: 'digital-art-and-design', title: 'Digital Art & Design', description: 'Explore the intersection of technology and creativity in digital illustration, design, and visual media.', level: 'intermediate', isFree: false, sortOrder: 4 },
 
     // Movie Knowledge (3)
     { topicSlug: 'movie-knowledge', slug: 'cinema-history', title: 'Cinema History', description: 'From silent films to streaming, explore the key moments and movements that shaped the film industry.', level: 'beginner', isFree: true, sortOrder: 1 },
@@ -219,34 +219,34 @@ async function seedCourses() {
 
     // Biology (3)
     { topicSlug: 'biology', slug: 'the-human-body', title: 'The Human Body', description: 'Discover how your body works, from major organ systems to the cellular processes that keep you alive.', level: 'beginner', isFree: true, sortOrder: 1 },
-    { topicSlug: 'biology', slug: 'genetics-dna', title: 'Genetics & DNA', description: 'Unravel the code of life and understand how genes shape traits, health, and heredity.', level: 'intermediate', isFree: false, sortOrder: 2 },
-    { topicSlug: 'biology', slug: 'ecology-evolution', title: 'Ecology & Evolution', description: 'Explore how species evolve, interact, and shape the ecosystems that sustain life on Earth.', level: 'advanced', isFree: false, sortOrder: 3 },
+    { topicSlug: 'biology', slug: 'genetics-and-dna', title: 'Genetics & DNA', description: 'Unravel the code of life and understand how genes shape traits, health, and heredity.', level: 'intermediate', isFree: false, sortOrder: 2 },
+    { topicSlug: 'biology', slug: 'ecology-and-evolution', title: 'Ecology & Evolution', description: 'Explore how species evolve, interact, and shape the ecosystems that sustain life on Earth.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Physics (4)
     { topicSlug: 'physics', slug: 'laws-of-motion', title: 'Laws of Motion', description: 'Understand Newton\'s laws and the fundamental principles that govern how objects move and interact.', level: 'beginner', isFree: true, sortOrder: 1 },
-    { topicSlug: 'physics', slug: 'energy-waves', title: 'Energy & Waves', description: 'Explore the physics of energy, light, sound, and the wave phenomena that shape our world.', level: 'intermediate', isFree: false, sortOrder: 2 },
+    { topicSlug: 'physics', slug: 'energy-and-waves', title: 'Energy & Waves', description: 'Explore the physics of energy, light, sound, and the wave phenomena that shape our world.', level: 'intermediate', isFree: false, sortOrder: 2 },
     { topicSlug: 'physics', slug: 'thermodynamics', title: 'Thermodynamics', description: 'Learn the laws of heat, entropy, and energy transfer that drive everything from engines to stars.', level: 'intermediate', isFree: false, sortOrder: 3 },
     { topicSlug: 'physics', slug: 'modern-physics', title: 'Modern Physics', description: 'Dive into relativity, quantum mechanics, and the cutting-edge theories that redefine our understanding.', level: 'advanced', isFree: false, sortOrder: 4 },
 
     // Literature (3)
     { topicSlug: 'literature', slug: 'classic-literature', title: 'Classic Literature', description: 'Read and analyze timeless works from Shakespeare to Dostoevsky and discover why they still matter.', level: 'beginner', isFree: true, sortOrder: 1 },
-    { topicSlug: 'literature', slug: 'storytelling-narrative', title: 'Storytelling & Narrative', description: 'Learn the techniques great writers use to craft compelling stories, characters, and emotional arcs.', level: 'intermediate', isFree: false, sortOrder: 2 },
-    { topicSlug: 'literature', slug: 'poetry-language', title: 'Poetry & Language', description: 'Appreciate the beauty of poetic form, meter, and figurative language across literary traditions.', level: 'advanced', isFree: false, sortOrder: 3 },
+    { topicSlug: 'literature', slug: 'storytelling-and-narrative', title: 'Storytelling & Narrative', description: 'Learn the techniques great writers use to craft compelling stories, characters, and emotional arcs.', level: 'intermediate', isFree: false, sortOrder: 2 },
+    { topicSlug: 'literature', slug: 'poetry-and-language', title: 'Poetry & Language', description: 'Appreciate the beauty of poetic form, meter, and figurative language across literary traditions.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Math & Logic (3)
     { topicSlug: 'math-logic', slug: 'everyday-math', title: 'Everyday Math', description: 'Build confidence with the practical math skills you use daily, from percentages to mental arithmetic.', level: 'beginner', isFree: true, sortOrder: 1 },
-    { topicSlug: 'math-logic', slug: 'logic-critical-thinking', title: 'Logic & Critical Thinking', description: 'Strengthen your reasoning skills with formal logic, argument analysis, and common fallacy detection.', level: 'intermediate', isFree: false, sortOrder: 2 },
+    { topicSlug: 'math-logic', slug: 'logic-and-critical-thinking', title: 'Logic & Critical Thinking', description: 'Strengthen your reasoning skills with formal logic, argument analysis, and common fallacy detection.', level: 'intermediate', isFree: false, sortOrder: 2 },
     { topicSlug: 'math-logic', slug: 'problem-solving-mastery', title: 'Problem-Solving Mastery', description: 'Tackle complex problems systematically using proven mathematical and logical frameworks.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Dog Training (3)
     { topicSlug: 'dog-training', slug: 'puppy-basics', title: 'Puppy Basics', description: 'Start your puppy off right with foundational training in commands, house rules, and socialization.', level: 'beginner', isFree: true, sortOrder: 1 },
-    { topicSlug: 'dog-training', slug: 'obedience-socialization', title: 'Obedience & Socialization', description: 'Build reliable obedience and healthy social skills so your dog thrives in any environment.', level: 'intermediate', isFree: false, sortOrder: 2 },
+    { topicSlug: 'dog-training', slug: 'obedience-and-socialization', title: 'Obedience & Socialization', description: 'Build reliable obedience and healthy social skills so your dog thrives in any environment.', level: 'intermediate', isFree: false, sortOrder: 2 },
     { topicSlug: 'dog-training', slug: 'advanced-training', title: 'Advanced Training', description: 'Master advanced commands, off-leash reliability, and behavior modification for challenging situations.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Style (3)
     { topicSlug: 'style', slug: 'style-essentials', title: 'Style Essentials', description: 'Discover your personal style identity and learn the foundational rules of dressing well every day.', level: 'beginner', isFree: true, sortOrder: 1 },
     { topicSlug: 'style', slug: 'dressing-for-occasions', title: 'Dressing for Occasions', description: 'Navigate dress codes with confidence, from business formal to smart casual and everything in between.', level: 'intermediate', isFree: false, sortOrder: 2 },
-    { topicSlug: 'style', slug: 'personal-brand-style', title: 'Personal Brand & Style', description: 'Align your wardrobe with your personal brand to communicate authority, creativity, or approachability.', level: 'advanced', isFree: false, sortOrder: 3 },
+    { topicSlug: 'style', slug: 'personal-brand-through-style', title: 'Personal Brand & Style', description: 'Align your wardrobe with your personal brand to communicate authority, creativity, or approachability.', level: 'advanced', isFree: false, sortOrder: 3 },
 
     // Voice (4)
     { topicSlug: 'voice', slug: 'voice-fundamentals', title: 'Voice Fundamentals', description: 'Understand how your voice works and learn the basics of breath support, tone, and vocal health.', level: 'beginner', isFree: true, sortOrder: 1 },

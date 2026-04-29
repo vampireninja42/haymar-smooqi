@@ -5,6 +5,7 @@ import { redirect } from 'next/navigation'
 import { LessonPlayer } from '@/components/lesson/LessonPlayer'
 import { VbLessonShell } from '@/components/lesson/VbLessonShell'
 import { themeConfig } from '@/lib/theme'
+import { canAccessCourse } from '@/lib/subscription'
 
 export default async function LessonPage({ params }: { params: { courseSlug: string; lessonSlug: string } }) {
   const session = await getServerSession(authOptions)
@@ -25,6 +26,16 @@ export default async function LessonPage({ params }: { params: { courseSlug: str
   })
 
   if (!lesson) redirect('/explore')
+
+  // Enforce subscription access
+  const user = await prisma.user.findUnique({
+    where: { id: session.user.id },
+    select: { subscriptionStatus: true, trialEndsAt: true },
+  })
+
+  if (!canAccessCourse(lesson.course, user ?? { subscriptionStatus: 'free', trialEndsAt: null })) {
+    redirect('/pricing?reason=trial_expired')
+  }
 
   // Fetch user progress for this lesson
   const progress = await prisma.userProgress.findUnique({

@@ -57,13 +57,13 @@ export function LearningPath({ topicSelections }: LearningPathProps) {
           No topics selected yet
         </p>
         <p className="mt-1 text-xs" style={{ color: isVB ? '#57534E' : '#6B7280' }}>
-          Choose topics to build your learning path.
+          Pick your interests to build a personalized learning path.
         </p>
         <Link
-          href="/explore"
+          href="/profile"
           className="mt-3 inline-block rounded-[var(--button-radius)] bg-[var(--color-primary)] px-4 py-2 text-sm font-medium text-white"
         >
-          Explore Topics
+          Choose Topics
         </Link>
       </div>
     )
